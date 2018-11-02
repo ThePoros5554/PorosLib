@@ -2,7 +2,6 @@ package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import systems.RobotManager;
 import systems.subsystems.MechDriveTrain;
 import systems.subsystems.MechDriveTrain.MechDrivingDirection;
 
@@ -23,19 +22,19 @@ public class MechTimedGyroDrive extends Command {
 		
 	private MechDrivingDirection drivingDirection;
     
-    public MechTimedGyroDrive(double speed, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
+    public MechTimedGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double speed, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
     {
     	super(timeout);
-    	this.SetControllers(speed, gyroKP, drivingDirection);
+    	this.SetControllers(driveTrain, gyro, speed, gyroKP, drivingDirection);
     	
     	this.gyroToZero = gyroToZero;
 
     }
     
-    public MechTimedGyroDrive(double speed, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
+    public MechTimedGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double speed, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
     {
     	super(timeout);
-    	this.SetControllers(speed, gyroKP, drivingDirection);
+    	this.SetControllers(driveTrain, gyro, speed, gyroKP, drivingDirection);
     	
     	this.gyroToZero = false;
     	
@@ -43,14 +42,14 @@ public class MechTimedGyroDrive extends Command {
     	this.gyroSetPoint = gyroSetPoint;
     }
     
-    private void SetControllers(double speed, double gyroKP, MechDrivingDirection drivingDirection)
+    private void SetControllers(MechDriveTrain driveTrain, Gyro gyro, double speed, double gyroKP, MechDrivingDirection drivingDirection)
     {
-    	this.driveTrain = (MechDriveTrain)RobotManager.GetDriveTrain();
+    	this.driveTrain = driveTrain;
     	requires(this.driveTrain);
     	
     	this.speed = speed;
     	
-    	this.gyro = RobotManager.GetGyro();
+    	this.gyro = gyro;
     	this.gyroKP = gyroKP;
     	
     	this.drivingDirection = drivingDirection;
@@ -88,11 +87,11 @@ public class MechTimedGyroDrive extends Command {
         
         if (drivingDirection == MechDrivingDirection.Forward)
         {	
-    		this.driveTrain.MecanumDrive(0, this.speed , angle);	
+    		this.driveTrain.MechanumDrive(0, this.speed , angle, 0, 1);	
         }
         if (drivingDirection == MechDrivingDirection.Sideways)
         {
-    		this.driveTrain.MecanumDrive(-this.speed, 0, angle);
+    		this.driveTrain.MechanumDrive(-this.speed, 0, angle, 0, 1);
         }
         
     }
@@ -106,7 +105,6 @@ public class MechTimedGyroDrive extends Command {
 
     protected void end() 
     {    	
-		this.driveTrain.MecanumDrive(0, 0, 0);
     	this.driveTrain.StopSystem();
     	    	
     	System.out.println("End Auto Drive");

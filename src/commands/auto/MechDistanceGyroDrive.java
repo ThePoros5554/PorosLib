@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import systems.ControllerOutput;
-import systems.RobotManager;
 import systems.subsystems.MechDriveTrain;
 import systems.subsystems.MechDriveTrain.MechDrivingDirection;
 
@@ -36,62 +35,19 @@ public class MechDistanceGyroDrive extends Command {
 	private MechDrivingDirection drivingDirection;
 
 	
-    public MechDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection) 
+    public MechDistanceGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection) 
     {
 
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
     	
     	this.gyroToZero = gyroToZero;
 
     }
     
-    public MechDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
+    public MechDistanceGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
     {
     	super(timeout);
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
-    	
-    	this.gyroToZero = gyroToZero;
-
-    	
-    	this.isTimed = true;
-    }
-    
-    public MechDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection) 
-    {
-
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
-    	
-    	this.gyroToZero = false;
-    	
-    	this.customSetPoint = true;
-    	this.gyroSetPoint = gyroSetPoint;
-    }
-    
-    public MechDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
-    {
-    	super(timeout);
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
-    	
-    	this.gyroToZero = false;
-    	
-    	this.customSetPoint = true;
-    	this.gyroSetPoint = gyroSetPoint;
-    	
-    	this.isTimed = true;
-    }
-    
-    public MechDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection) 
-    {
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, outputEnc, fixEnc, fixKp, gyroKP, drivingDirection);
-    	
-    	this.gyroToZero = gyroToZero;
-
-    }
-    
-    public MechDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
-    {
-    	super(timeout);
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, outputEnc, fixEnc, fixKp, gyroKP, drivingDirection);
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
     	
     	this.gyroToZero = gyroToZero;
 
@@ -99,10 +55,10 @@ public class MechDistanceGyroDrive extends Command {
     	this.isTimed = true;
     }
     
-    public MechDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection) 
+    public MechDistanceGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection) 
     {
 
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, outputEnc, fixEnc, fixKp, gyroKP, drivingDirection);
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
     	
     	this.gyroToZero = false;
     	
@@ -110,10 +66,10 @@ public class MechDistanceGyroDrive extends Command {
     	this.gyroSetPoint = gyroSetPoint;
     }
     
-    public MechDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
+    public MechDistanceGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
     {
     	super(timeout);
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
     	
     	this.gyroToZero = false;
     	
@@ -123,9 +79,52 @@ public class MechDistanceGyroDrive extends Command {
     	this.isTimed = true;
     }
     
-    private void SetControllers(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, double gyroKP, MechDrivingDirection drivingDirection)
+    public MechDistanceGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection) 
     {
-    	this.driveTrain = (MechDriveTrain)RobotManager.GetDriveTrain();
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, outputEnc, fixEnc, fixKp, gyroKP, drivingDirection);
+    	
+    	this.gyroToZero = gyroToZero;
+
+    }
+    
+    public MechDistanceGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, boolean gyroToZero, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
+    {
+    	super(timeout);
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, outputEnc, fixEnc, fixKp, gyroKP, drivingDirection);
+    	
+    	this.gyroToZero = gyroToZero;
+
+    	
+    	this.isTimed = true;
+    }
+    
+    public MechDistanceGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection) 
+    {
+
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, outputEnc, fixEnc, fixKp, gyroKP, drivingDirection);
+    	
+    	this.gyroToZero = false;
+    	
+    	this.customSetPoint = true;
+    	this.gyroSetPoint = gyroSetPoint;
+    }
+    
+    public MechDistanceGyroDrive(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
+    {
+    	super(timeout);
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, outputEnc, null, 0, gyroKP, drivingDirection);
+    	
+    	this.gyroToZero = false;
+    	
+    	this.customSetPoint = true;
+    	this.gyroSetPoint = gyroSetPoint;
+    	
+    	this.isTimed = true;
+    }
+    
+    private void SetControllers(MechDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder outputEnc, Encoder fixEnc, double fixKp, double gyroKP, MechDrivingDirection drivingDirection)
+    {
+    	this.driveTrain = driveTrain;
     	requires(this.driveTrain);
     	
     	this.outputEnc = outputEnc;
@@ -148,7 +147,7 @@ public class MechDistanceGyroDrive extends Command {
     	this.controller.setPercentTolerance(percentTolerance);
     	this.controller.setSetpoint(setPoint);
     	
-    	this.gyro = RobotManager.GetGyro();
+    	this.gyro = gyro;
     	this.gyroKP = gyroKP;
     	
     	this.drivingDirection = drivingDirection;
@@ -200,7 +199,6 @@ public class MechDistanceGyroDrive extends Command {
         
         if(this.fixEnc != null)
         {
-        	System.out.println("dasudgasiflfasdofyug");
             if(this.driveTrain.IsReversed() == true)
             {
             	fixError = (this.fixEnc.getDistance()) * (-this.fixKp);
@@ -213,11 +211,11 @@ public class MechDistanceGyroDrive extends Command {
         
         if (drivingDirection == MechDrivingDirection.Forward)
         {	
-    		this.driveTrain.MecanumDrive(fixError, output , angle);	
+    		this.driveTrain.MechanumDrive(fixError, output , angle,0, 1);	
         }
         if (drivingDirection == MechDrivingDirection.Sideways)
         {
-    		this.driveTrain.MecanumDrive(-output, fixError, angle);
+    		this.driveTrain.MechanumDrive(-output, fixError, angle,0, 1);
         }
         
     }
@@ -238,10 +236,9 @@ public class MechDistanceGyroDrive extends Command {
     {
     	this.controller.reset();
     	
+		this.driveTrain.MechanumDrive(0, 0, 0, 0, 1);
     	this.driveTrain.StopSystem();
-    	
-    	System.out.println(outputEnc.getDistance());
-    	
+    	    	
     	System.out.println("End Auto Drive");
 
     }

@@ -2,7 +2,6 @@ package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import systems.RobotManager;
 import systems.subsystems.DiffDriveTrain;
 
 /**
@@ -16,13 +15,13 @@ public class DiffTimedGyroDrive extends Command
 	private double kP;
 	private double speed;
 
-    public DiffTimedGyroDrive(String speedKey, double kP, double time) 
+    public DiffTimedGyroDrive(DiffDriveTrain driveTrain, Gyro gyro, double speed, double kP, double time) 
     {
         super("TimedGyroDrive" , time);
-    	this.gyro = RobotManager.GetGyro();
-    	this.driveTrain = (DiffDriveTrain)RobotManager.GetDriveTrain();
+    	this.gyro = gyro;
+    	this.driveTrain = driveTrain;
     	this.kP = kP;
-    	this.speed = RobotManager.GetSpeed(speedKey);
+    	this.speed = speed;
         requires(this.driveTrain);
     }
 
@@ -38,11 +37,11 @@ public class DiffTimedGyroDrive extends Command
         double angle = gyro.getAngle() * (-this.kP);
 			if(this.driveTrain.IsReversed() == true)
 			{
-				this.driveTrain.ArcadeDrive(-this.speed, angle);
+				this.driveTrain.ArcadeDrive(-this.speed, angle, 1);
 			}
 			else
 			{
-				this.driveTrain.ArcadeDrive(this.speed, angle);
+				this.driveTrain.ArcadeDrive(this.speed, angle, 1);
 			}
     }
 
@@ -62,7 +61,7 @@ public class DiffTimedGyroDrive extends Command
     @Override
     protected void end() 
     {
-			((DiffDriveTrain) this.driveTrain).ArcadeDrive(0, 0);
+			this.driveTrain.ArcadeDrive(0, 0, 1);
     }
 
     protected void interrupted() 

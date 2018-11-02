@@ -1,7 +1,6 @@
 package commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.RobotManager;
 import systems.subsystems.DriveTrain;
 
 /**
@@ -11,9 +10,9 @@ public class ReverseDriveTrain extends Command {
 
 	DriveTrain driveTrain;
 	
-    public ReverseDriveTrain() 
+    public ReverseDriveTrain(DriveTrain driveTrain) 
     {
-    	this.driveTrain = RobotManager.GetDriveTrain();
+    	this.driveTrain = driveTrain;
     	requires(this.driveTrain);
     }
 

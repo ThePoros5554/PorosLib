@@ -4,7 +4,6 @@ import org.opencv.core.Point;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import systems.RobotManager;
 import systems.subsystems.DriveTrain;
 import systems.subsystems.DiffDriveTrain;
 import systems.subsystems.MechDriveTrain;
@@ -24,9 +23,9 @@ public class ImageAllignment extends Command {
 	private DriveTrain driveTrain;
 	private String driveTrainClass;
 	
-    public ImageAllignment(double speed, double kP, Point targetPoint, double targArea) 
+    public ImageAllignment(DriveTrain driveTrain, double speed, double kP, Point targetPoint, double targArea) 
     {
-    	this.driveTrain = RobotManager.GetDriveTrain();   
+    	this.driveTrain = driveTrain;   
     	requires(this.driveTrain);
     	this.driveTrainClass = this.driveTrain.getClass().getTypeName();
     	
@@ -42,7 +41,7 @@ public class ImageAllignment extends Command {
     
     public ImageAllignment(double speed, double kP, double targetX, double targArea) 
     {
-        requires(RobotManager.GetDriveTrain());
+        requires(this.driveTrain);
         
         this.speed = speed;
         this.kP = kP;
@@ -67,11 +66,11 @@ public class ImageAllignment extends Command {
     	
     		if(this.driveTrainClass == "systems.subsystems.DiffDriveTrain")
     		{
-    			((DiffDriveTrain) this.driveTrain).ArcadeDrive(this.speed, error * this.kP);
+    			((DiffDriveTrain) this.driveTrain).ArcadeDrive(this.speed, error * this.kP, 1);
     		}
     		else
     		{
-    			((MechDriveTrain) this.driveTrain).MecanumDrive(this.speed, error * this.kP, 0);
+    			((MechDriveTrain) this.driveTrain).MechanumDrive(0, this.speed, error * this.kP, 0, 1);
 
     		}
     	}

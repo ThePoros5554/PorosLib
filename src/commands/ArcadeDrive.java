@@ -1,9 +1,8 @@
 package commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.RobotManager;
 import systems.subsystems.DiffDriveTrain;
-import triggers.JoystickTools;
+import triggers.SmartJoystick;
 
 /**
  *
@@ -12,11 +11,15 @@ public class ArcadeDrive extends Command
 {
 
 	private DiffDriveTrain driveTrain;
+	private SmartJoystick joy;
 	
-    public ArcadeDrive()
+	private double maxOutput = 1;
+	
+    public ArcadeDrive(DiffDriveTrain driveTrain, SmartJoystick joy)
     {
-    	this.driveTrain = (DiffDriveTrain)RobotManager.GetDriveTrain();
-         requires(this.driveTrain);
+    	this.driveTrain = driveTrain;
+    	this.joy = joy;
+        requires(this.driveTrain);
     }
 
     // Called just before this Command runs the first time
@@ -27,35 +30,32 @@ public class ArcadeDrive extends Command
     // Called repeatedly when this Command is scheduled to run
     protected void execute()
     {
-    	double speedValue = RobotManager.GetDriveJoy().getRawAxis(RobotManager.GetSpeedAxis());
-    	double rotateValue =  RobotManager.GetDriveJoy().getRawAxis(RobotManager.GetRotateAxis());
+    	double speedValue = this.joy.GetSpeedAxis();
+    	double rotateValue =  this.joy.GetRotateAxis();
     	
-    	if (this.driveTrain.GetMinSpeedValue() > 0)
+    	if(this.driveTrain.IsRanged())
     	{
-    		speedValue = JoystickTools.MapAxisMinimum(speedValue, this.driveTrain.GetMinSpeedValue());
+    		this.maxOutput = this.joy.GetSlider();
     	}
-    	if (this.driveTrain.GetMinRotateValue() > 0)
+    	else
     	{
-    		rotateValue = JoystickTools.MapAxisMinimum(rotateValue, this.driveTrain.GetMinRotateValue());
+    		this.maxOutput = 1;
     	}
     	
-		this.driveTrain.ArcadeDrive(speedValue, rotateValue);
+		this.driveTrain.ArcadeDrive(speedValue, rotateValue, maxOutput);
     }
 
-    // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished()
     {
         return false;
     }
 
-    // Called once after isFinished returns true
     protected void end()
     {
-    	this.driveTrain.ArcadeDrive(0, 0);
+    	this.driveTrain.ArcadeDrive(0, 0, this.maxOutput);
     }
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
+
     protected void interrupted()
     {
     	end();

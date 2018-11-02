@@ -3,7 +3,6 @@ package commands;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.RobotManager;
 import systems.subsystems.MechSys;
 
 /**
@@ -13,18 +12,18 @@ public class SetAllLimits extends Command
 {
 	
 	private boolean setLimits;
+	private List<MechSys> subsystems;
 	
-    public SetAllLimits(boolean setLimits) 
+    public SetAllLimits(List<MechSys> subsystems, boolean setLimits) 
     {
     	this.setLimits = setLimits;
+    	this.subsystems = subsystems;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() 
-    {
-    	List<MechSys> systems = RobotManager.GetMechSystems();
-    	
-    	for(MechSys sys : systems)
+    {    	
+    	for(MechSys sys : this.subsystems)
     	{
     		sys.SetIsLimited(this.setLimits);
     	}

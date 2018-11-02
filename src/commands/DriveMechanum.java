@@ -1,9 +1,8 @@
 package commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.RobotManager;
 import systems.subsystems.MechDriveTrain;
-import triggers.JoystickTools;
+import triggers.SmartJoystick;
 
 /**
  *
@@ -11,10 +10,14 @@ import triggers.JoystickTools;
 public class DriveMechanum extends Command{
 	
 	private MechDriveTrain driveTrain;
+	private SmartJoystick joy;
 	
-    public DriveMechanum()
+	private double maxOutput = 1;
+
+    public DriveMechanum(MechDriveTrain driveTrain, SmartJoystick joy)
     {   
-    	this.driveTrain = (MechDriveTrain)RobotManager.GetDriveTrain();
+    	this.driveTrain = driveTrain;
+    	this.joy = joy;
     	requires(this.driveTrain);
     }
 
@@ -27,24 +30,21 @@ public class DriveMechanum extends Command{
     
     protected void execute()
     {
-    	double speedValue = RobotManager.GetDriveJoy().getRawAxis(RobotManager.GetSpeedAxis());
-    	double rotateValue =  RobotManager.GetDriveJoy().getRawAxis(RobotManager.GetRotateAxis());
-    	double twistValue =  RobotManager.GetDriveJoy().getRawAxis(RobotManager.GetTwistAxis());
+    	double speedValue = this.joy.GetSpeedAxis();
+    	double rotateValue = this.joy.GetRotateAxis();
+    	double twistValue =  this.joy.GetTwistAxis();
     	
-    	if(this.driveTrain.GetMinSpeedValue() > 0)
+    	
+    	if(this.driveTrain.IsRanged())
     	{
-    		speedValue = JoystickTools.MapAxisMinimum(speedValue, this.driveTrain.GetMinSpeedValue());
+    		this.maxOutput = this.joy.GetSlider();
     	}
-    	if(this.driveTrain.GetMinRotateValue() > 0)
+    	else
     	{
-        	rotateValue = JoystickTools.MapAxisMinimum(rotateValue, this.driveTrain.GetMinRotateValue());
-    	}
-    	if(this.driveTrain.GetMinTwistValue() > 0)
-    	{
-        	twistValue = JoystickTools.MapAxisMinimum(twistValue, this.driveTrain.GetMinTwistValue());
+    		this.maxOutput = 1;
     	}
     	
-    	this.driveTrain.MechanumDrive(speedValue, rotateValue, twistValue, 0);
+    	this.driveTrain.MechanumDrive(speedValue, rotateValue, twistValue, 0, this.maxOutput);
     }
 
     
@@ -56,7 +56,7 @@ public class DriveMechanum extends Command{
     
     protected void end()
     {
-    	this.driveTrain.MechanumDrive(0, 0, 0, 0);
+    	this.driveTrain.MechanumDrive(0, 0, 0, 0, this.maxOutput);
     }
 
     

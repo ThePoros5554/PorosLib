@@ -1,7 +1,6 @@
 package commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.RobotManager;
 import systems.subsystems.DoubleSolenoidSys;
 
 /**
@@ -11,9 +10,9 @@ public class OpenDoubleSolenoid extends Command {
 
 	DoubleSolenoidSys subsystem;
 	
-    public OpenDoubleSolenoid(String key)
+    public OpenDoubleSolenoid(DoubleSolenoidSys subsystem)
     {
-    	this.subsystem = ((DoubleSolenoidSys)RobotManager.GetSubsystem(key));
+    	this.subsystem = subsystem;
         requires(this.subsystem);
     }
 

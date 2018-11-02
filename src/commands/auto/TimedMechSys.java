@@ -1,7 +1,6 @@
 package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.RobotManager;
 import systems.subsystems.MechSys;
 
 /**
@@ -9,29 +8,29 @@ import systems.subsystems.MechSys;
  */
 public class TimedMechSys extends Command {
 
-	private MechSys system;
+	private MechSys subsystem;
 	private double speed;
 	
 	private double zeroValue = 0;
 	
-    public TimedMechSys(String key, double speed, double timeout) 
+    public TimedMechSys(MechSys subsystem, double speed, double timeout) 
     {
         super(timeout);
         
-        this.system = ((MechSys)RobotManager.GetSubsystem(key));
+        this.subsystem = subsystem;
         this.speed = speed;
         
-        requires(this.system);
+        requires(this.subsystem);
     }
     
-    public TimedMechSys(String key, double speed, double zeroValue, double timeout) 
+    public TimedMechSys(MechSys system, double speed, double zeroValue, double timeout) 
     {
         super(timeout);
         
-        this.system = ((MechSys)RobotManager.GetSubsystem(key));
+        this.subsystem = system;
         this.speed = speed;
         
-        requires(this.system);
+        requires(this.subsystem);
         
         this.zeroValue = zeroValue;
     }
@@ -44,7 +43,7 @@ public class TimedMechSys extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute()
     {
-    	this.system.Activate(this.speed, zeroValue);
+    	this.subsystem.Activate(this.speed, zeroValue);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -56,7 +55,7 @@ public class TimedMechSys extends Command {
     // Called once after isFinished returns true
     protected void end() 
     {
-    	this.system.Activate(0, zeroValue);
+    	this.subsystem.Activate(0, zeroValue);
     }
 
     // Called when another command which requires one or more of the same

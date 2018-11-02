@@ -2,7 +2,6 @@ package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
 import systems.PIDAction;
-import systems.RobotManager;
 
 /**
  *
@@ -11,9 +10,9 @@ public class RunPIDAction extends Command {
 
 	private PIDAction action;
 	
-    public RunPIDAction(String actionKey) 
+    public RunPIDAction(PIDAction action) 
     {
-        this.action = RobotManager.GetPIDAction(actionKey);
+        this.action = action;
         
         requires(this.action.GetSubsystem());
     }

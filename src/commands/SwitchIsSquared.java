@@ -1,7 +1,6 @@
 package commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.RobotManager;
 import systems.subsystems.DiffDriveTrain;
 
 /**
@@ -9,21 +8,23 @@ import systems.subsystems.DiffDriveTrain;
  */
 public class SwitchIsSquared extends Command {
 
-    public SwitchIsSquared() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+	DiffDriveTrain driveTrain;
+	
+    public SwitchIsSquared(DiffDriveTrain driveTrain) 
+    {
+        this.driveTrain = driveTrain;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() 
     {
-    	if(((DiffDriveTrain)RobotManager.GetDriveTrain()).GetIsSquared())
+    	if(this.driveTrain.GetIsSquared())
     	{
-    		((DiffDriveTrain)RobotManager.GetDriveTrain()).SetIsSquared(false);
+    		this.driveTrain .SetIsSquared(false);
     	}
     	else
     	{
-    		((DiffDriveTrain)RobotManager.GetDriveTrain()).SetIsSquared(true);
+    		this.driveTrain .SetIsSquared(true);
     	}
     }
 

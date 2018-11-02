@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import systems.ControllerOutput;
-import systems.RobotManager;
 import systems.subsystems.DiffDriveTrain;
 import systems.subsystems.MechDriveTrain.MechDrivingDirection;
 
@@ -29,33 +28,33 @@ public class DiffDistanceGyroDrive extends Command {
 	
 	private boolean isTimed = false;
 	
-    public DiffDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, boolean gyroToZero, double gyroKP) 
+    public DiffDistanceGyroDrive(DiffDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, boolean gyroToZero, double gyroKP) 
     {
 
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, enc, gyroToZero, gyroKP);
+    	this.SetControllers(driveTrain,gyro, kP, kI, kD, percentTolerance, setPoint, enc, gyroToZero, gyroKP);
     }
     
-    public DiffDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, boolean gyroToZero, double gyroKP, double timeout) 
+    public DiffDistanceGyroDrive(DiffDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, boolean gyroToZero, double gyroKP, double timeout) 
     {
     	super(timeout);
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, enc ,gyroToZero, gyroKP);
+    	this.SetControllers(driveTrain,gyro, kP, kI, kD, percentTolerance, setPoint, enc ,gyroToZero, gyroKP);
     	
     	this.isTimed = true;
     }
     
-    public DiffDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, double gyroSetPoint, double gyroKP) 
+    public DiffDistanceGyroDrive(DiffDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, double gyroSetPoint, double gyroKP) 
     {
 
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, enc, gyroToZero, gyroKP);
+    	this.SetControllers(driveTrain,gyro, kP, kI, kD, percentTolerance, setPoint, enc, gyroToZero, gyroKP);
     	
     	this.customSetPoint = true;
     	this.gyroSetPoint = gyroSetPoint;
     }
     
-    public DiffDistanceGyroDrive(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
+    public DiffDistanceGyroDrive(DiffDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, double gyroSetPoint, double gyroKP, MechDrivingDirection drivingDirection, double timeout) 
     {
     	super(timeout);
-    	this.SetControllers(kP, kI, kD, percentTolerance, setPoint, enc ,gyroToZero, gyroKP);
+    	this.SetControllers(driveTrain, gyro, kP, kI, kD, percentTolerance, setPoint, enc ,gyroToZero, gyroKP);
     	
     	this.customSetPoint = true;
     	this.gyroSetPoint = gyroSetPoint;
@@ -63,9 +62,9 @@ public class DiffDistanceGyroDrive extends Command {
     	this.isTimed = true;
     }
     
-    private void SetControllers(double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, boolean gyroToZero, double gyroKP)
+    private void SetControllers(DiffDriveTrain driveTrain, Gyro gyro, double kP, double kI, double kD,  double percentTolerance, double setPoint, Encoder enc, boolean gyroToZero, double gyroKP)
     {
-    	this.driveTrain = (DiffDriveTrain)RobotManager.GetDriveTrain();
+    	this.driveTrain = driveTrain;
     	requires(this.driveTrain);
     	
     	this.enc = enc;
@@ -85,7 +84,7 @@ public class DiffDistanceGyroDrive extends Command {
     	this.controller.setPercentTolerance(percentTolerance);
     	this.controller.setSetpoint(setPoint);
     	
-    	this.gyro = RobotManager.GetGyro();
+    	this.gyro = gyro;
     	this.gyroToZero = gyroToZero;
     	this.gyroKP = gyroKP;
     }
@@ -126,7 +125,7 @@ public class DiffDistanceGyroDrive extends Command {
         	output = -this.encPIDOutput.GetOutput();
         }
 
-    	this.driveTrain.ArcadeDrive(output , angle);	
+    	this.driveTrain.ArcadeDrive(output , angle, 1);	
         
     }
 
@@ -147,9 +146,7 @@ public class DiffDistanceGyroDrive extends Command {
     	this.controller.reset();
     	
     	this.driveTrain.StopSystem();
-    	
-    	System.out.println(enc.getDistance());
-    	
+    	    	
     	System.out.println("End Auto Drive");
 
     }

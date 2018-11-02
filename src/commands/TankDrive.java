@@ -1,9 +1,8 @@
 package commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.RobotManager;
 import systems.subsystems.DiffDriveTrain;
-import triggers.JoystickTools;
+import triggers.SmartJoystick;
 
 /**
  *
@@ -12,10 +11,14 @@ public class TankDrive extends Command
 {
 
 	private DiffDriveTrain driveTrain;
+	private SmartJoystick leftJoy;
+	private SmartJoystick rightJoy;
 	
-    public TankDrive()
+	private double maxOutput = 1;
+	
+    public TankDrive(DiffDriveTrain driveTrain, SmartJoystick leftJoy, SmartJoystick rightJoy)
     {
-    	this.driveTrain = (DiffDriveTrain)RobotManager.GetDriveTrain();
+    	this.driveTrain = driveTrain;
         requires(this.driveTrain);
     }
 
@@ -28,32 +31,31 @@ public class TankDrive extends Command
     // Called repeatedly when this Command is scheduled to run
     protected void execute()
     {
-    	double leftValue = RobotManager.GetDriveJoy2().getRawAxis(RobotManager.GetSpeedAxis());
-    	double rightValue = RobotManager.GetDriveJoy().getRawAxis(RobotManager.GetSpeedAxis());
-    	
-    	if (this.driveTrain.GetMinSpeedValue() > 0)
-    	{
-    		leftValue = JoystickTools.MapAxisMinimum(leftValue, this.driveTrain.GetMinSpeedValue());
-    		rightValue = JoystickTools.MapAxisMinimum(leftValue, this.driveTrain.GetMinSpeedValue());
-    	}
+    	double leftValue = leftJoy.GetSpeedAxis();
+    	double rightValue = rightJoy.GetSpeedAxis();
 
-    	this.driveTrain.TankDrive(leftValue, rightValue);
+    	if(this.driveTrain.IsRanged())
+    	{
+    		this.maxOutput = this.rightJoy.GetSlider();
+    	}
+    	else
+    	{
+    		this.maxOutput = 1;
+    	}
+    	
+    	this.driveTrain.TankDrive(leftValue, rightValue, this.maxOutput);
     }
 
-    // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished()
     {
         return false;
     }
 
-    // Called once after isFinished returns true
     protected void end()
     {
-    	this.driveTrain.TankDrive(0,0);
+    	this.driveTrain.TankDrive(0, 0, this.maxOutput);
     }
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
     protected void interrupted()
     {
     	end();

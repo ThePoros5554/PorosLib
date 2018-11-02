@@ -9,13 +9,11 @@ public class DriveTrain extends Subsystem
 {
 
 	private boolean isReversed = false;
-	
+		
 	private boolean isRanged = false;
 	
 	private boolean enabled = false;
-	
-	private double maxOutput = 1;
-	
+			
 	private double minSpeedValue = 0;
 	private double minRotateValue = 0;
 
@@ -30,17 +28,7 @@ public class DriveTrain extends Subsystem
     	return this.isReversed;
     }
     
-    public void SetIsRanged(boolean isRanged)
-    {
-    	this.isRanged = isRanged;
-    } 
-    
-    public boolean IsRanged()
-    {
-    	return this.isRanged;
-    }
-    
-    public void SetEnabled(boolean enabled)
+    public void SetIsEnabled(boolean enabled)
     {
     	this.enabled = enabled;
     }
@@ -50,15 +38,14 @@ public class DriveTrain extends Subsystem
     	return this.enabled;
     }
     
-    
-    public void SetMaxOutput(double maxOutput)
+    public void SetIsRanged(boolean isRanged)
     {
-    	this.maxOutput = maxOutput;
+    	this.isRanged = isRanged;
     }
     
-    public double GetMaxOutput()
+    public boolean IsRanged()
     {
-    	return this.maxOutput;
+    	return this.isRanged;
     }
     
     public void SetMinSpeedValue(double minSpeedValue)
@@ -80,13 +67,13 @@ public class DriveTrain extends Subsystem
     {
     	return this.minRotateValue;
     }
-	
-	@Override
-	protected void initDefaultCommand() 
-	{
-		
 
+	@Override
+	protected void initDefaultCommand() {
+		// TODO Auto-generated method stub
+		
 	}
+	
 
 	
 }

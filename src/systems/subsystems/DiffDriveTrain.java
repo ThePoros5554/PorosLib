@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import systems.DifferentialDriver;
-import systems.RobotManager;
 
 /**
  *
@@ -12,7 +11,6 @@ import systems.RobotManager;
 public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
 {
 	private DifferentialDriver driver;
-	private DiffDriveTypes drivingType;
 	private PIDOutput pidOutput;
 	private boolean isSquared;
 	
@@ -24,45 +22,16 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
     public DiffDriveTrain(SpeedController leftController, SpeedController rightController, boolean isReversed)
     {
     	driver = new DifferentialDriver(leftController , rightController);
-    	this.SetIsReversed(isReversed);; 
-    }
+    	this.SetIsReversed(isReversed);
+    }   
     
-    public DiffDriveTrain(SpeedController leftController, SpeedController rightController, DiffDriveTypes drivingType)
+    public void ArcadeDrive(double speed, double rotate, double maxOutput)
     {
-    	driver = new DifferentialDriver(leftController , rightController);
-    	this.drivingType = drivingType;
-    }
-    
-    public DiffDriveTrain(SpeedController leftController, SpeedController rightController, DiffDriveTypes drivingType, boolean isReversed)
-    {
-    	driver = new DifferentialDriver(leftController , rightController);
-    	this.SetIsReversed(isReversed);; 
-    	this.drivingType = drivingType;
-    }
-    
-
-    public void SetDriveType(DiffDriveTypes drivingType)
-    {
-    	this.drivingType = drivingType;
-    }
-   
-    
-    public void ArcadeDrive(double speed, double rotate)
-    {
-    	if(this.IsRanged())
-    	{
-    		this.driver.setMaxOutput(RobotManager.GetSliderValue());
-    		
-    	}
-    	else
-    	{
-    		this.driver.setMaxOutput(this.GetMaxOutput());
-    	}
+    	this.driver.setMaxOutput(maxOutput);
     	
     	if(this.IsReversed())
     	{
     		driver.arcadeDrive(-speed,-rotate, this.isSquared);
-
     	}
     	else
     	{
@@ -70,43 +39,17 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
     	}
     }
     
-    public void TankDrive(double leftSpeed ,double rightSpeed)
+    public void TankDrive(double leftSpeed ,double rightSpeed, double maxOutput)
     {
-    	if(this.IsRanged())
-    	{
-    		this.driver.setMaxOutput(RobotManager.GetSliderValue());
-    		
-    	}
-    	else
-    	{
-    		this.driver.setMaxOutput(this.GetMaxOutput());
-    	}
+    	this.driver.setMaxOutput(maxOutput);
     	
     	if(this.IsReversed())
     	{
         	driver.tankDrive(-leftSpeed , -rightSpeed, this.isSquared);
-
     	}
     	else
     	{
         	driver.tankDrive(leftSpeed , rightSpeed, this.isSquared);
-    	}
-    }
-    
-    
-    @Override
-    public void initDefaultCommand() 
-    {
-    	if(this.drivingType == DiffDriveTypes.ArcadeDrive)
-    	{
-    		setDefaultCommand(new commands.ArcadeDrive());
-    	}
-    	else if(this.drivingType == DiffDriveTypes.TankDrive)
-    	{
-    		setDefaultCommand(new commands.TankDrive());
-    	}
-    	else
-    	{
     	}
     }
     
@@ -154,12 +97,6 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
 	{
 		return this.pidOutput;
 	}
-	
-    public enum DiffDriveTypes
-    {
-    	ArcadeDrive,
-    	TankDrive;
-    }
 
     public enum DiffPidAction
     {

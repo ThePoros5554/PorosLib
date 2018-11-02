@@ -7,6 +7,14 @@ public class SmartJoystick extends Joystick
 
 	private boolean[] disabledAxis;
 	
+	private int speedAxis = 0;
+	private int rotateAxis = 1;
+	private int twistAxis = 2;
+	
+	private int sliderAxis = 3;
+	private int minSlider = 0;
+	private int maxSlider = 1;
+	
 	public SmartJoystick(int port) 
 	{
 		super(port);
@@ -52,6 +60,51 @@ public class SmartJoystick extends Joystick
 		{
 			return 0;
 		}
+	}
+	
+	public void SetSpeedAxis(int speedAxis)
+	{
+		this.speedAxis = speedAxis;
+	}
+	
+	public void SetRotateAxis(int rotateAxis)
+	{
+		this.rotateAxis = rotateAxis;
+	}
+	
+	public void SetTwistAxis(int twistAxis)
+	{
+		this.twistAxis = twistAxis;
+	}
+	
+	public void SetSlider(int sliderAxis, int minValue, int maxValue)
+	{
+		this.sliderAxis = sliderAxis;
+		this.minSlider = minValue;
+		this.maxSlider = maxValue;
+	}
+	
+	public double GetSpeedAxis()
+	{
+		return super.getRawAxis(this.speedAxis);
+	}
+	
+	public double GetRotateAxis()
+	{
+		return super.getRawAxis(this.rotateAxis);
+	}
+	
+	public double GetTwistAxis()
+	{
+		return super.getRawAxis(this.twistAxis);
+	}
+	
+	public double GetSlider()
+	{
+		double sliderValue = this.getRawAxis(this.sliderAxis);
+		sliderValue = (sliderValue + this.minSlider * -1) / (this.maxSlider + (this.minSlider * -1));
+		
+		return (sliderValue);
 	}
 	
 	

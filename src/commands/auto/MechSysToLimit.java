@@ -1,6 +1,5 @@
 package commands.auto;
 
-import systems.RobotManager;
 import systems.subsystems.MechSys;
 import edu.wpi.first.wpilibj.command.Command;
 import sensors.SysPosition;
@@ -17,17 +16,17 @@ public class MechSysToLimit extends Command
 	
 	private double zeroValue = 0;
 
-    public MechSysToLimit(String key, double speed, SysPosition targetPosition) 
+    public MechSysToLimit(MechSys subsystem, double speed, SysPosition targetPosition) 
     {
-    	this.subsystem = ((MechSys)RobotManager.GetSubsystem(key));
+    	this.subsystem = subsystem;
     	this.speed = speed;
     	this.targetPosition = targetPosition;
         requires(this.subsystem);
     }
     
-    public MechSysToLimit(String key, double speed, double zeroValue, SysPosition targetPosition) 
+    public MechSysToLimit(MechSys subsystem, double speed, double zeroValue, SysPosition targetPosition) 
     {
-    	this.subsystem = ((MechSys)RobotManager.GetSubsystem(key));
+    	this.subsystem = subsystem;
     	this.speed = speed;
     	this.targetPosition = targetPosition;
         requires(this.subsystem);
