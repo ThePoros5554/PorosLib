@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import systems.ControllerOutput;
 import systems.subsystems.DiffDriveTrain;
 import systems.subsystems.MechDriveTrain.MechDrivingDirection;
+import util.ControllerOutput;
 
 /**
  *

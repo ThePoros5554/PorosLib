@@ -19,10 +19,7 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 	private boolean isLimited = false;
 
 	private boolean isInverted;
-	private boolean isLookedReversed = false;
-	
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
+	private boolean isReversed = false;
 
 	public MechSys(int port)
 	{
@@ -55,7 +52,7 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 	{		
 		double procSpeed;
 		
-		if(this.isLookedReversed) // reverses the speed so the limit if's will work properly
+		if(this.isReversed) // reverses the speed so the limit if's will work properly
 		{
 			procSpeed = -speed;
 		}
@@ -123,14 +120,14 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 		}
 	}
 	
-	public void SetIsLookedReversed(boolean isReversed)
+	public void SetIsReversed(boolean isReversed)
 	{
-		this.isLookedReversed = isReversed;
+		this.isReversed = isReversed;
 	}
 	
-	public boolean GetIsLookedReversed()
+	public boolean GetIsReversed()
 	{
-		return this.isLookedReversed;
+		return this.isReversed;
 	}
 
 	@Override

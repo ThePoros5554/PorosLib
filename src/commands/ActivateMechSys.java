@@ -2,6 +2,7 @@ package commands;
 
 import systems.subsystems.MechSys;
 import triggers.JoyAxis;
+import util.Speed;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -12,23 +13,23 @@ public class ActivateMechSys extends Command
 
 	private MechSys subsystem;
 	
-	private String speedKey;
+	private Speed speedObj;
 	private double speed;
 	private JoyAxis speedAxis;
 	
 	private double zeroValue = 0;
 
-    public ActivateMechSys(MechSys subsystem, String speedKey) 
+    public ActivateMechSys(MechSys subsystem, Speed speed) 
     {
     	this.subsystem = subsystem;
-    	this.speedKey = speedKey;
+    	this.speedObj = speed;
         requires(this.subsystem);
     }
     
-    public ActivateMechSys(MechSys subsystem, String speedKey, int zeroValue) 
+    public ActivateMechSys(MechSys subsystem, Speed speed, int zeroValue) 
     {
     	this.subsystem = subsystem;
-    	this.speedKey = speedKey;
+    	this.speedObj = speed;
         requires(this.subsystem);
 
     }
@@ -63,17 +64,15 @@ public class ActivateMechSys extends Command
         this.zeroValue = zeroValue;
     }
 
-    // Called just before this Command runs the first time
     protected void initialize() {
     	
     }
 
-    // Called repeatedly when this Command is scheduled to run
     protected void execute() 
     {
-    	if(this.speedKey != null)
+    	if(this.speedObj != null)
     	{
-    		//this.subsystem.Activate(RobotManager.GetSpeed(this.speedKey));
+    		this.subsystem.Activate(this.speedObj.GetValue());
     	}
     	else if(this.speedAxis != null)
     	{
@@ -85,20 +84,17 @@ public class ActivateMechSys extends Command
     	}
     }
 
-    // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() 
     {
         return false;
     }
 
-    // Called once after isFinished returns true
     protected void end() 
     {
     	this.subsystem.Activate(this.zeroValue, this.zeroValue);
     }
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
+
     protected void interrupted() 
     {
     	this.end();

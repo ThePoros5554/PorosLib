@@ -2,6 +2,7 @@ package triggers;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import util.MathHelper;
 
 public class JoyAxis extends Trigger
 {
@@ -43,9 +44,9 @@ public class JoyAxis extends Trigger
 	
 	public double GetAxisValue()
 	{
-		double sliderValue = joy.getRawAxis(this.axisNumber);
+		double value = joy.getRawAxis(this.axisNumber);
 		
-		return JoystickTools.MapRange(this.oldMaxValue, this.oldMinValue, this.newMinValue, this.newMaxValue, sliderValue);
+		return MathHelper.MapRange(this.oldMaxValue, this.oldMinValue, this.newMinValue, this.newMaxValue, value);
 	}
 }
 	
