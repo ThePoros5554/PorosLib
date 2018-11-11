@@ -1,6 +1,7 @@
 package triggers;
 
 import edu.wpi.first.wpilibj.Joystick;
+import util.MathHelper;
 
 public class SmartJoystick extends Joystick
 {
@@ -12,6 +13,8 @@ public class SmartJoystick extends Joystick
 	private int twistAxis = 2;
 	
 	private int sliderAxis = 3;
+	private int oldMinSlider = -1;
+	private int oldMaxSlider = 1;
 	private int minSlider = 0;
 	private int maxSlider = 1;
 	
@@ -77,11 +80,13 @@ public class SmartJoystick extends Joystick
 		this.twistAxis = twistAxis;
 	}
 	
-	public void SetSlider(int sliderAxis, int minValue, int maxValue)
+	public void SetSlider(int sliderAxis, int newMin, int newMax, int oldMin, int oldMax)
 	{
 		this.sliderAxis = sliderAxis;
-		this.minSlider = minValue;
-		this.maxSlider = maxValue;
+		this.oldMinSlider = oldMin;
+		this.oldMaxSlider = oldMax;
+		this.minSlider = newMin;
+		this.maxSlider = newMax;
 	}
 	
 	public double GetSpeedAxis()
@@ -102,7 +107,7 @@ public class SmartJoystick extends Joystick
 	public double GetSlider()
 	{
 		double sliderValue = this.getRawAxis(this.sliderAxis);
-		sliderValue = (sliderValue + this.minSlider * -1) / (this.maxSlider + (this.minSlider * -1));
+		sliderValue = MathHelper.MapRange(this.oldMinSlider, this.oldMaxSlider, this.minSlider, this.maxSlider, sliderValue);
 		
 		return (sliderValue);
 	}
