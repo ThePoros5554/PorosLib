@@ -1,7 +1,7 @@
 package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.PIDProcess;
+import systems.PIDProcessor;
 import systems.subsystems.PidActionSubsys;
 
 /**
@@ -10,9 +10,9 @@ import systems.subsystems.PidActionSubsys;
 public class SimplePIDAction extends Command {
 
 	private PidActionSubsys subsystem;
-	private PIDProcess controller;
+	private PIDProcessor controller;
 	
-    public SimplePIDAction(PidActionSubsys subsystem, PIDProcess controller) 
+    public SimplePIDAction(PidActionSubsys subsystem, PIDProcessor controller) 
     {
         this.controller = controller;
         
@@ -26,7 +26,7 @@ public class SimplePIDAction extends Command {
     {
     	this.controller.ResetFeedbackDevice();
     	
-    	this.controller.GetController().enable();
+    	this.controller.enable();
     }
     
     @Override
@@ -37,13 +37,13 @@ public class SimplePIDAction extends Command {
     @Override
     protected boolean isFinished()
     {
-        return this.controller.GetController().onTarget();
+        return this.controller.onTarget();
     }
 
     @Override
     protected void end() 
     {
-    	this.controller.GetController().reset();
+    	this.controller.reset();
     	this.subsystem.StopSystem();
     	
     	System.out.println("PID Action Ends");

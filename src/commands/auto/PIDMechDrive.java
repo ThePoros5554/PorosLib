@@ -1,50 +1,63 @@
 package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.PIDProcess;
+import systems.PIDProcessor;
 import systems.subsystems.MechDriveTrain;
 import systems.subsystems.MechDriveTrain.MechDrivingDirection;
+import util.ControllerOutput;
 
 public class PIDMechDrive extends Command
 {
 	private MechDriveTrain dt;
 	
-	private PIDProcess fwdProc;
-	private PIDProcess sideProc;
-	private PIDProcess angleProc;
+	private PIDProcessor fwdProc;
+	private ControllerOutput fwdOut;
+	private PIDProcessor sideProc;
+	private ControllerOutput sideOut;
+	private PIDProcessor angleProc;
+	private ControllerOutput angleOut;
 	
 	private MechDrivingDirection direction;
 	
-	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcess fwdProc, double fwdSp, PIDProcess sideProc, double sideSp, PIDProcess angleProc, double angleSp)
+	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor fwdProc, double fwdSp, PIDProcessor sideProc, double sideSp, PIDProcessor angleProc, double angleSp)
+	{
+		this.LoadCmd(dt, direction, fwdProc,fwdSp, sideProc, sideSp, angleProc, angleSp);
+	}
+	
+	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor fwdProc, double fwdSp, PIDProcessor sideProc, double sideSp, PIDProcessor angleProc, double angleSp, double timeout)
+	{
+		super(timeout);
+		this.LoadCmd(dt, direction, fwdProc,fwdSp, sideProc, sideSp, angleProc, angleSp);
+	}
+	
+	private void LoadCmd(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor fwdProc, double fwdSp, PIDProcessor sideProc, double sideSp, PIDProcessor angleProc, double angleSp)
 	{
 		requires(dt);
 
 		this.dt = dt;		
 		this.direction = direction;
 		
-		this.fwdProc = fwdProc;
-		this.fwdProc.SetIsOutputing(false);
-		this.sideProc = sideProc;
-		this.sideProc.SetIsOutputing(false);
-		this.angleProc = angleProc;
-		this.angleProc.SetIsOutputing(false);
-	}
-	
-	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcess fwdProc, double fwdSp, PIDProcess sideProc, double sideSp, PIDProcess angleProc, double angleSp, double timeout)
-	{
-		super(timeout);
-		
-		requires(dt);
+    	if(fwdProc != null)
+    	{
+    		this.fwdProc = fwdProc;
+    		this.fwdOut = new ControllerOutput();
+    		this.fwdProc.SetOutput(this.fwdOut);
+    	}
+    	
+    	if(sideProc != null)
+    	{
+    		this.sideProc = sideProc;
+    		this.sideOut = new ControllerOutput();
+    		this.sideProc.SetOutput(this.sideOut);
+    	}
+    	
+    	if(angleProc != null)
+    	{
+    		this.angleProc = angleProc;
+    		this.angleOut = new ControllerOutput();
+    		this.angleProc.SetOutput(this.angleOut);
+    	}
 
-		this.dt = dt;
-		this.direction = direction;
-		
-		this.fwdProc = fwdProc;
-		this.fwdProc.SetIsOutputing(false);
-		this.sideProc = sideProc;
-		this.sideProc.SetIsOutputing(false);
-		this.angleProc = angleProc;
-		this.angleProc.SetIsOutputing(false);
 	}
 	
 	@Override
@@ -53,19 +66,19 @@ public class PIDMechDrive extends Command
     	if(fwdProc != null)
     	{
     		fwdProc.ResetFeedbackDevice();
-    		fwdProc.GetController().enable();
+    		fwdProc.enable();
     	}
     	
     	if(sideProc != null)
     	{
     		sideProc.ResetFeedbackDevice();
-    		sideProc.GetController().enable();
+    		sideProc.enable();
     	}
     	
     	if(angleProc != null)
     	{
     		angleProc.ResetFeedbackDevice();
-    		angleProc.GetController().enable();
+    		angleProc.enable();
     	}
     }
 	
@@ -78,17 +91,17 @@ public class PIDMechDrive extends Command
     	
     	if(this.fwdProc != null)
     	{
-    		fwdOutput = this.fwdProc.GetController().get();
+    		fwdOutput = this.fwdOut.GetOutput();
     	}
     	
     	if(this.sideProc != null)
     	{
-    		sideOutput = this.sideProc.GetController().get();
+    		sideOutput = this.sideOut.GetOutput();
     	}
     	
     	if(this.angleProc != null)
     	{
-    		angleOutput = this.angleProc.GetController().get();
+    		angleOutput = this.angleOut.GetOutput();
     	}
     	
     	this.dt.MechanumDrive(sideOutput, fwdOutput, angleOutput, 0, 1);
@@ -99,11 +112,11 @@ public class PIDMechDrive extends Command
 	{
 		if(this.direction == MechDrivingDirection.Forward)
 		{
-			return this.fwdProc.GetController().onTarget() || this.isTimedOut();
+			return this.fwdProc.onTarget() || this.isTimedOut();
 		}
 		else if(this.direction == MechDrivingDirection.Sideways)
 		{
-			return this.sideProc.GetController().onTarget() || this.isTimedOut();
+			return this.sideProc.onTarget() || this.isTimedOut();
 		}
 		else
 		{
@@ -116,17 +129,17 @@ public class PIDMechDrive extends Command
 	{
     	if(fwdProc != null)
     	{
-    		fwdProc.GetController().reset();
+    		fwdProc.reset();
     	}
     	
     	if(sideProc != null)
     	{
-    		sideProc.GetController().reset();
+    		sideProc.reset();
     	}
     	
     	if(angleProc != null)
     	{
-    		angleProc.GetController().reset();
+    		angleProc.reset();
     	}
     	
 		this.dt.MechanumDrive(0, 0, 0, 0, 1);
