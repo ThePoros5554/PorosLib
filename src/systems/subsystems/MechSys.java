@@ -1,6 +1,5 @@
 package systems.subsystems;
 
-import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -129,12 +128,6 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 	{
 		return this.isReversed;
 	}
-
-	@Override
-	public PIDOutput GetPidOutput() 
-	{
-		return this::PidWrite;
-	}
 	
 	public SysPosition GetPosition ()
 	{
@@ -153,7 +146,7 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 		this.isLimited = true;
 	}
 	
-	private void PidWrite(double output)
+	public void PidWrite(double output)
 	{
 		this.motor.pidWrite(output);
 		

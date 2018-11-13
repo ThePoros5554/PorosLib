@@ -1,6 +1,5 @@
 package systems.subsystems;
 
-import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import systems.MechaumDriver;
@@ -11,8 +10,6 @@ import systems.MechaumDriver;
 public class MechDriveTrain extends DriveTrain implements PidActionSubsys {
 
 	private MechaumDriver driver;
-
-	private PIDOutput pidOutput;
 	
 	private double minTwistValue = 0;
 	
@@ -50,18 +47,18 @@ public class MechDriveTrain extends DriveTrain implements PidActionSubsys {
 		driver.stopMotor();
 	}
 
-	private void PidDrive(double output)
+	public void PidDrive(double output)
 	{
 		driver.PidDrive(output);
 	}
 	
-	private void PidTwist(double output)
+	public void PidTwist(double output)
 	{
 		driver.PidTwist(output);
 
 	}
 	
-	private void PidTurnInPlace(double output)
+	public void PidTurnInPlace(double output)
 	{
 		if(this.IsReversed())
 		{
@@ -72,22 +69,6 @@ public class MechDriveTrain extends DriveTrain implements PidActionSubsys {
 			driver.PidTurnInPlace(-output);
 		}
 	}
-	
-    public void SetPIDOutput(MechPidAction actionType)
-    {
-    	if(actionType == MechPidAction.PidTurnInPlace)
-    	{
-    		this.pidOutput = this::PidTurnInPlace;
-    	}
-    	else if(actionType == MechPidAction.PidTwist)
-    	{
-    		this.pidOutput = this::PidTwist;
-    	}
-    	else if(actionType == MechPidAction.PidDrive)
-    	{
-    		this.pidOutput = this::PidDrive;
-    	}
-    }
     
     public void SetMinTwistValue(double minTwistValue)
     {
@@ -98,12 +79,6 @@ public class MechDriveTrain extends DriveTrain implements PidActionSubsys {
     {
     	return this.minTwistValue;
     }
-	
-	@Override
-	public PIDOutput GetPidOutput() 
-	{
-    	return this.pidOutput;
-	}
 
 	@Override
 	public Subsystem GetSubsystem() 
@@ -115,13 +90,6 @@ public class MechDriveTrain extends DriveTrain implements PidActionSubsys {
     {
     	Forward,
     	Sideways
-    }
-
-    public enum MechPidAction
-    {
-    	PidDrive,
-    	PidTwist,
-    	PidTurnInPlace;
     }
 }
 

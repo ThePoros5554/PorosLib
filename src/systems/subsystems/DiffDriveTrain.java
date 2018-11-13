@@ -1,6 +1,5 @@
 package systems.subsystems;
 
-import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import systems.DifferentialDriver;
@@ -11,7 +10,6 @@ import systems.DifferentialDriver;
 public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
 {
 	private DifferentialDriver driver;
-	private PIDOutput pidOutput;
 	private boolean isSquared;
 	
     public DiffDriveTrain(SpeedController leftController, SpeedController rightController)
@@ -53,18 +51,6 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
     	}
     }
     
-    public void SetPIDOutput(DiffPidAction actionType)
-    {
-    	if(actionType == DiffPidAction.PidTurnInPlace)
-    	{
-    		this.pidOutput = this::PidTurnInPlace;
-    	}
-    	else if(actionType == DiffPidAction.PidDrive)
-    	{
-    		this.pidOutput = this::PidDrive;
-    	}
-    }
-    
     public void SetIsSquared (boolean isSquared)
     {
     	this.isSquared = isSquared;
@@ -75,12 +61,12 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
     	return this.isSquared;
     }
     
-    private void PidTurnInPlace(double output)
+    public void PidTurnInPlace(double output)
     {
     	driver.PidTurnInPlace(output);
     }
     
-    private void PidDrive(double output)
+    public void PidDrive(double output)
     {
     	driver.PidDrive(output);
     }
@@ -92,17 +78,6 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
 		this.driver.stopMotor();
 	}
     
-	@Override
-	public PIDOutput GetPidOutput()
-	{
-		return this.pidOutput;
-	}
-
-    public enum DiffPidAction
-    {
-    	PidTurnInPlace,
-    	PidDrive;
-    }
 
 	@Override
 	public Subsystem GetSubsystem() 
