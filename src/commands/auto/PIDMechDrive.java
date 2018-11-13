@@ -3,6 +3,7 @@ package commands.auto;
 import edu.wpi.first.wpilibj.command.Command;
 import systems.PIDProcessor;
 import systems.subsystems.MechDriveTrain;
+import systems.subsystems.MechDriveTrain.MechDrivingDirection;
 
 public class PIDMechDrive extends Command
 {
@@ -12,11 +13,14 @@ public class PIDMechDrive extends Command
 	private PIDProcessor sideProc;
 	private PIDProcessor angleProc;
 	
-	public PIDMechDrive(MechDriveTrain dt, PIDProcessor fwdProc, double fwdSp, PIDProcessor sideProc, double sideSp, PIDProcessor angleProc, double angleSp)
+	private MechDrivingDirection direction;
+	
+	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor fwdProc, double fwdSp, PIDProcessor sideProc, double sideSp, PIDProcessor angleProc, double angleSp)
 	{
-		this.dt = dt;
-		
 		requires(dt);
+
+		this.dt = dt;		
+		this.direction = direction;
 		
 		this.fwdProc = fwdProc;
 		this.fwdProc.SetIsOutputing(false);
@@ -26,12 +30,14 @@ public class PIDMechDrive extends Command
 		this.angleProc.SetIsOutputing(false);
 	}
 	
-	public PIDMechDrive(MechDriveTrain dt, PIDProcessor fwdProc, double fwdSp, PIDProcessor sideProc, double sideSp, PIDProcessor angleProc, double angleSp, double timeout)
+	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor fwdProc, double fwdSp, PIDProcessor sideProc, double sideSp, PIDProcessor angleProc, double angleSp, double timeout)
 	{
 		super(timeout);
-		this.dt = dt;
 		
 		requires(dt);
+
+		this.dt = dt;
+		this.direction = direction;
 		
 		this.fwdProc = fwdProc;
 		this.fwdProc.SetIsOutputing(false);
@@ -91,7 +97,18 @@ public class PIDMechDrive extends Command
 	@Override
 	protected boolean isFinished() 
 	{
-    	return this.fwdProc.onTarget() || this.isTimedOut();
+		if(this.direction == MechDrivingDirection.Forward)
+		{
+			return this.fwdProc.onTarget() || this.isTimedOut();
+		}
+		else if(this.direction == MechDrivingDirection.Sideways)
+		{
+			return this.sideProc.onTarget() || this.isTimedOut();
+		}
+		else
+		{
+			return true;
+		}
 	}
 	
 	@Override
