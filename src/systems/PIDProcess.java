@@ -7,36 +7,39 @@ import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 
 
-public class PIDProcessor extends PIDController
+public class PIDProcess 
 {
+	private PIDController controller;
+	
+	private PIDSource source;
 	private PIDOutput outputDevice;
 	
 	private boolean isOutputing = false;
 	  
 	
-	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source) 
+	public PIDProcess(double Kp, double Ki, double Kd, PIDSource source) 
 	{
 		this(Kp, Ki, Kd, source, null, false); 
 	}
 	
-	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output, boolean isOutputing) 
-	{
-		super(Kp, Ki, Kd, 0, source, null, kDefaultPeriod);
-		  
-		this.m_pidOutput = this::PIDWrite;
+	public PIDProcess(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output, boolean isOutputing) 
+	{				
+		this.controller = new PIDController(Kp, Ki, Kd, 0, source, this::PIDWrite);
+
+		this.source = source;
 		this.outputDevice = output;
 		this.isOutputing = isOutputing;
 	}
 		
 	public void ResetFeedbackDevice()
 	{
-		if(this.m_pidInput.getClass() == Encoder.class)
+		if(this.source.getClass() == Encoder.class)
 		{
-			((Encoder)this.m_pidInput).reset();
+			((Encoder)this.source).reset();
 		}
-		else if(this.m_pidInput.getClass() == ADXRS450_Gyro.class)
+		else if(this.source.getClass() == ADXRS450_Gyro.class)
 		{
-			((ADXRS450_Gyro)this.m_pidInput).reset();
+			((ADXRS450_Gyro)this.source).reset();
 		}
 	}
 	
@@ -67,6 +70,11 @@ public class PIDProcessor extends PIDController
 	public void SetIsOutputing(boolean isOutputing)
 	{
 		this.isOutputing = isOutputing;
+	}
+	
+	public PIDController GetController()
+	{
+		return this.controller;
 	}
 
 
