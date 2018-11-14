@@ -43,10 +43,10 @@ public class SimplePIDAction extends Command {
     @Override
     protected void end() 
     {
-    	this.controller.reset();
     	this.subsystem.StopSystem();
+    	this.controller.reset();
     	
-    	System.out.println("PID Action Ends");
+    	System.out.println("PID Action Ended");
     }
 
     @Override

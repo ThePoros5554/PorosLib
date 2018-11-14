@@ -10,9 +10,7 @@ import systems.MechaumDriver;
 public class MechDriveTrain extends DriveTrain implements PidActionSubsys {
 
 	private MechaumDriver driver;
-	
-	private double minTwistValue = 0;
-	
+		
     public MechDriveTrain(SpeedController frontLeftMotor, SpeedController rearLeftMotor,
             SpeedController frontRightMotor, SpeedController rearRightMotor)
     {
@@ -69,16 +67,6 @@ public class MechDriveTrain extends DriveTrain implements PidActionSubsys {
 			driver.PidTurnInPlace(-output);
 		}
 	}
-    
-    public void SetMinTwistValue(double minTwistValue)
-    {
-    	this.minTwistValue = minTwistValue;
-    }
-    
-    public double GetMinTwistValue()
-    {
-    	return this.minTwistValue;
-    }
 
 	@Override
 	public Subsystem GetSubsystem() 

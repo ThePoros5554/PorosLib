@@ -9,6 +9,12 @@ import edu.wpi.first.wpilibj.PIDSource;
 
 public class PIDProcessor extends PIDController 
 {	
+	public enum ToleranceType
+	{
+		AbsoluteTolerance,
+		PercentageTolerance
+	}
+	
 	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source) 
 	{
 		this(Kp, Ki, Kd, source, null);
@@ -36,6 +42,48 @@ public class PIDProcessor extends PIDController
 	public void SetOutput(PIDOutput output)
 	{
 		this.m_pidOutput = output;
+	}
+	
+	
+	public void SetForRun(double setPoint)
+	{
+		double maxInput;
+		double minInput;
+		
+		if(setPoint > 0)
+		{
+			maxInput = setPoint;
+			minInput = 0;
+		}
+		else
+		{
+			maxInput = 0;
+			minInput = setPoint;
+		}
+		
+		this.SetForRun(setPoint, maxInput, minInput, 1 , ToleranceType.PercentageTolerance, false);
+	}
+	
+	public void SetForRun(double setPoint, double absTolerance)
+	{
+		this.SetForRun(setPoint, 0, 0, absTolerance, ToleranceType.AbsoluteTolerance, false);
+	}
+	
+	public void SetForRun(double setPoint, double maxInput, double minInput, double toleranceValue, ToleranceType toleranceType, boolean isContinous)
+	{
+		this.setSetpoint(setPoint);
+		
+		if(minInput != 0 && maxInput != 0)
+		this.setInputRange(minInput, maxInput);
+		
+		if(toleranceType == ToleranceType.AbsoluteTolerance)
+		{
+			this.setAbsoluteTolerance(toleranceValue);
+		}
+		else
+		{
+			this.setPercentTolerance(toleranceValue);
+		}
 	}
 
 }
