@@ -1,4 +1,4 @@
-package systems.subsystems;
+package subsystems;
 
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;

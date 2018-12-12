@@ -5,17 +5,43 @@ import edu.wpi.first.wpilibj.PIDOutput;
 public class ControllerOutput implements PIDOutput
 {
 		
-	private double output;
+	private double outputValue;
+	private PIDOutput outputDevice;
+	private boolean isReversed;
+	
+	public ControllerOutput(boolean isReversed)
+	{
+		this.isReversed = isReversed;
+	}
+	
+	public ControllerOutput(boolean isReversed, PIDOutput outputDevice)
+	{
+		this.isReversed = isReversed;
+		this.outputDevice = outputDevice;
+	}
 		
 	@Override
 	public void pidWrite(double output) 
 	{
-		this.output = output;
+		
+		if(this.isReversed)
+		{
+			this.outputValue = -output;
+		}
+		else
+		{
+			this.outputValue = output;
+		}
+		
+		if(this.outputDevice != null)
+		{
+			this.outputDevice.pidWrite(this.outputValue);	
+		}
 	}
 		
-	public double GetOutput()
+	public double GetOutputValue()
 	{
-		return this.output;
+		return this.outputValue;
 	}
 		
 }

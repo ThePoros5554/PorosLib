@@ -1,4 +1,4 @@
-package systems.subsystems;
+package subsystems;
 
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -62,6 +62,7 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 				
 		if(this.limitSwitch != null && this.isLimited)
 		{
+
 			if(limitSwitch.GetPosition() != SysPosition.Blocked)
 			{
 				if(procSpeed < 0)
@@ -88,9 +89,10 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 				speed = 0;
 			}
 		}
-				
+			
 		if(speed == 0)
 		{
+
 			speed = zeroValue;
 		}
 		

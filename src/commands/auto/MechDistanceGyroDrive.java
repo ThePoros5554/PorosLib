@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import systems.subsystems.MechDriveTrain;
-import systems.subsystems.MechDriveTrain.MechDrivingDirection;
+import subsystems.MechDriveTrain;
+import subsystems.MechDriveTrain.MechDrivingDirection;
 import util.ControllerOutput;
 
 /**
@@ -129,7 +129,7 @@ public class MechDistanceGyroDrive extends Command {
     	
     	this.outputEnc = outputEnc;
     	this.outputEnc.setPIDSourceType(PIDSourceType.kDisplacement);
-    	this.encPIDOutput = new ControllerOutput();
+    	this.encPIDOutput = new ControllerOutput(false);
     	this.controller = new PIDController(kP, kI, kD, outputEnc, this.encPIDOutput);
     	
     	this.fixEnc = fixEnc;
@@ -187,12 +187,12 @@ public class MechDistanceGyroDrive extends Command {
         if(this.driveTrain.IsReversed() == true)
         {
         	angle = (this.gyroSetPoint - gyro.getAngle()) * (-this.gyroKP);
-        	output = this.encPIDOutput.GetOutput();
+        	output = this.encPIDOutput.GetOutputValue();
         }
         else
         {
         	angle = (this.gyroSetPoint - gyro.getAngle()) * (this.gyroKP);
-        	output = -this.encPIDOutput.GetOutput();
+        	output = -this.encPIDOutput.GetOutputValue();
         }
         
         double fixError = 0;

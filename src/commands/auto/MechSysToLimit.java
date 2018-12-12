@@ -1,8 +1,8 @@
 package commands.auto;
 
-import systems.subsystems.MechSys;
 import edu.wpi.first.wpilibj.command.Command;
 import sensors.SysPosition;
+import subsystems.MechSys;
 
 /**
  *

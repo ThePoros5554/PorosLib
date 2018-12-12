@@ -5,45 +5,48 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
+import util.ControllerOutput;
 
 
 public class PIDProcessor extends PIDController 
 {	
+	private PIDSource feedbackDevice;
+	
 	public enum ToleranceType
 	{
 		AbsoluteTolerance,
 		PercentageTolerance
 	}
 	
-	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source) 
+	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source, boolean isReversed) 
 	{
-		this(Kp, Ki, Kd, source, null);
-		  
+		super(Kp, Ki, Kd, source, new ControllerOutput(isReversed));	
+		this.feedbackDevice = source;
 	}
 	
-	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output) 
+	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output, boolean isReversed) 
 	{
-		super(Kp, Ki, Kd, 0, source, output, kDefaultPeriod);
-		  
+		super(Kp, Ki, Kd, 0, source, new ControllerOutput(isReversed, output), kDefaultPeriod);
+		this.feedbackDevice = source;
 	}
 		
 	public void ResetFeedbackDevice()
-	{
-		if(this.m_pidInput.getClass() == Encoder.class)
+	{		
+		
+		if(this.feedbackDevice instanceof edu.wpi.first.wpilibj.Encoder)
 		{
-			((Encoder)this.m_pidInput).reset();
+			((Encoder)this.feedbackDevice).reset();
 		}
-		else if(this.m_pidInput.getClass() == ADXRS450_Gyro.class)
+		else if(this.feedbackDevice instanceof edu.wpi.first.wpilibj.ADXRS450_Gyro)
 		{
-			((ADXRS450_Gyro)this.m_pidInput).reset();
-		}
+			((ADXRS450_Gyro)this.feedbackDevice).reset();
+		}		
 	}
 
 	public void SetOutput(PIDOutput output)
 	{
 		this.m_pidOutput = output;
 	}
-	
 	
 	public void SetForRun(double setPoint)
 	{
@@ -85,5 +88,12 @@ public class PIDProcessor extends PIDController
 			this.setPercentTolerance(toleranceValue);
 		}
 	}
+	
+	public double GetOutputValue()
+	{
+		return ((ControllerOutput)this.m_pidOutput).GetOutputValue();
+	}
+
+
 
 }

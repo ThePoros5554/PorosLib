@@ -2,7 +2,7 @@ package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import systems.subsystems.DiffDriveTrain;
+import subsystems.DiffDriveTrain;
 
 /**
  *

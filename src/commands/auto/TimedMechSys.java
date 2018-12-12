@@ -1,7 +1,7 @@
 package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.subsystems.MechSys;
+import subsystems.MechSys;
 
 /**
  *

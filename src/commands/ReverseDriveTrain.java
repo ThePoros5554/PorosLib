@@ -1,7 +1,7 @@
 package commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.subsystems.DriveTrain;
+import subsystems.DriveTrain;
 
 /**
  *

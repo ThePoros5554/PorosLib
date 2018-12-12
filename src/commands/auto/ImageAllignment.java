@@ -3,10 +3,10 @@ package commands.auto;
 import org.opencv.core.Point;
 
 import edu.wpi.first.wpilibj.command.Command;
+import subsystems.DiffDriveTrain;
+import subsystems.DriveTrain;
+import subsystems.MechDriveTrain;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import systems.subsystems.DriveTrain;
-import systems.subsystems.DiffDriveTrain;
-import systems.subsystems.MechDriveTrain;
 
 
 public class ImageAllignment extends Command {

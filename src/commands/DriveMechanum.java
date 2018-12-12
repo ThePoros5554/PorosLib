@@ -1,7 +1,7 @@
 package commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.subsystems.MechDriveTrain;
+import subsystems.MechDriveTrain;
 import triggers.SmartJoystick;
 
 /**

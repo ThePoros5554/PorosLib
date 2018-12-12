@@ -2,29 +2,29 @@ package sensors;
 
 public class DualLimit implements LimitSensor
 {
-	private LimitSensor max;
-	private LimitSensor min;
+	private LimitSensor first;
+	private LimitSensor second;
 	
-	public DualLimit (LimitSensor max, LimitSensor min)
+	public DualLimit (LimitSensor first, LimitSensor second)
 	{
-		this.max = max;
-		this.min = min;
+		this.first = first;
+		this.second = second;
 	}
 	
 	@Override
 	public SysPosition GetPosition ()
 	{
-		if(max.GetPosition() != SysPosition.Free && min.GetPosition() != SysPosition.Free)
+		if(first.GetPosition() != SysPosition.Free && second.GetPosition() != SysPosition.Free)
 		{
 			return SysPosition.Blocked;
 		}
-		else if(max.GetPosition() != SysPosition.Free)
+		else if(first.GetPosition() != SysPosition.Free)
 		{
-			return SysPosition.Top;
+			return first.GetPosition();
 		}
-		else if(min.GetPosition() != SysPosition.Free)
+		else if(second.GetPosition() != SysPosition.Free)
 		{
-			return SysPosition.Bottom;
+			return second.GetPosition();
 		}
 		else
 		{

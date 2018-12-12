@@ -3,7 +3,7 @@ package commands;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.command.Command;
-import systems.subsystems.MechSys;
+import subsystems.MechSys;
 
 /**
  *

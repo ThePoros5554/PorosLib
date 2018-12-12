@@ -1,8 +1,8 @@
 package commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
+import subsystems.PidActionSubsys;
 import systems.PIDProcessor;
-import systems.subsystems.PidActionSubsys;
 
 /**
  *

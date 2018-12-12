@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import systems.subsystems.DiffDriveTrain;
-import systems.subsystems.MechDriveTrain.MechDrivingDirection;
+import subsystems.DiffDriveTrain;
+import subsystems.MechDriveTrain.MechDrivingDirection;
 import util.ControllerOutput;
 
 /**
@@ -69,7 +69,7 @@ public class DiffDistanceGyroDrive extends Command {
     	
     	this.enc = enc;
     	this.enc.setPIDSourceType(PIDSourceType.kDisplacement);
-    	this.encPIDOutput = new ControllerOutput();
+    	this.encPIDOutput = new ControllerOutput(false);
     	this.controller = new PIDController(kP, kI, kD, enc, this.encPIDOutput);
     	
     	if(setPoint > 0)
@@ -117,12 +117,12 @@ public class DiffDistanceGyroDrive extends Command {
         if(this.driveTrain.IsReversed() == true)
         {
         	angle = (this.gyroSetPoint - gyro.getAngle()) * (-this.gyroKP);
-        	output = this.encPIDOutput.GetOutput();
+        	output = this.encPIDOutput.GetOutputValue();
         }
         else
         {
         	angle = (this.gyroSetPoint - gyro.getAngle()) * (this.gyroKP);
-        	output = -this.encPIDOutput.GetOutput();
+        	output = -this.encPIDOutput.GetOutputValue();
         }
 
     	this.driveTrain.ArcadeDrive(output , angle, 1);	

@@ -1,9 +1,9 @@
 package commands;
 
-import systems.subsystems.MechSys;
 import triggers.JoyAxis;
 import util.Speed;
 import edu.wpi.first.wpilibj.command.Command;
+import subsystems.MechSys;
 
 /**
  *
@@ -72,15 +72,15 @@ public class ActivateMechSys extends Command
     {
     	if(this.speedObj != null)
     	{
-    		this.subsystem.Activate(this.speedObj.GetValue());
+    		this.subsystem.Activate(this.speedObj.GetValue(), this.zeroValue);
     	}
     	else if(this.speedAxis != null)
     	{
-    		this.subsystem.Activate(speedAxis.GetAxisValue());
+    		this.subsystem.Activate(speedAxis.GetAxisValue(), this.zeroValue);
     	}
     	else
     	{
-    		this.subsystem.Activate(this.speed);
+    		this.subsystem.Activate(this.speed, this.zeroValue);
     	}
     }
 
@@ -91,7 +91,7 @@ public class ActivateMechSys extends Command
 
     protected void end() 
     {
-    	this.subsystem.Activate(this.zeroValue, this.zeroValue);
+    	this.subsystem.Activate(0, this.zeroValue);
     }
 
 
