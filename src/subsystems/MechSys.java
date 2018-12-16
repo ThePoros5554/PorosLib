@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import sensors.LimitSensor;
 import sensors.SysPosition;
+import systems.CurrentSafety;
+import systems.SafeSubsystem;
 
 /**
  *
  */
-public class MechSys extends Subsystem implements PidActionSubsys {
+public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem {
 
 	private SpeedController motor;
 	private SpeedController motor2;
@@ -19,6 +21,11 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 
 	private boolean isInverted;
 	private boolean isReversed = false;
+
+	private boolean isDisabled = false;
+	private boolean isSafetyEnabled = false;
+	
+	private CurrentSafety safety;
 
 	public MechSys(int port)
 	{
@@ -41,6 +48,12 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 		this.isInverted = inverted;
 	}
 	
+
+	@Override
+	protected void initDefaultCommand() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	public void Activate(double speed)
 	{				
@@ -96,28 +109,26 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 			speed = zeroValue;
 		}
 		
-		this.motor.set(speed);
-
-		if(motor2 != null)
+		if(this.safety != null && this.isSafetyEnabled)
 		{
-			if(this.isInverted)
-			{
-				this.motor2.set(-speed);
-			}
-			else
-			{
-				this.motor2.set(speed);
-			}
+			safety.calculate();
 		}
-	}
-	@Override
-	public void StopSystem() 
-	{
-		this.motor.set(0);
 		
-		if(motor2 != null)
+		if(!this.isDisabled)
 		{
-			this.motor2.set(0);
+			this.motor.set(speed);
+	
+			if(motor2 != null)
+			{
+				if(this.isInverted)
+				{
+					this.motor2.set(-speed);
+				}
+				else
+				{
+					this.motor2.set(speed);
+				}
+			}
 		}
 	}
 	
@@ -131,7 +142,7 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 		return this.isReversed;
 	}
 	
-	public SysPosition GetPosition ()
+	public SysPosition GetPosition()
 	{
 		return limitSwitch.GetPosition();
 	}
@@ -176,14 +187,64 @@ public class MechSys extends Subsystem implements PidActionSubsys {
 		this.isLimited = isLimited;
 	}
 	
-	public void initDefaultCommand() 
+	public void EnableSafety(boolean isSafetyEnabled)
 	{
+		this.isSafetyEnabled = isSafetyEnabled;
+	}
+	
+	public boolean IsSafetyEnabled()
+	{
+		return this.isSafetyEnabled;
+	}
+	
+	public void Stop() 
+	{
+		this.motor.set(0);
+		
+		if(motor2 != null)
+		{
+			this.motor2.set(0);
+		}
     }
+	
+	public void SetSafety(CurrentSafety safety)
+	{
+		this.safety = safety;
+	}
 
 	@Override
 	public Subsystem GetSubsystem() 
 	{
 		return this;
 	}
+	
+	@Override
+	public void StopSystem() 
+	{
+		this.Stop();
+	}
+
+	@Override
+	public void Disable() 
+	{
+		this.Stop();
+		this.isDisabled = true;
+		
+	}
+
+	@Override
+	public void Enable()
+	{
+		this.isDisabled = false;
+	}
+
+	@Override
+	public boolean IsDisabled() 
+	{
+		return this.isDisabled;
+	}
+
+	
+	
 }
 

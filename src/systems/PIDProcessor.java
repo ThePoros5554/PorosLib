@@ -23,19 +23,6 @@ public class PIDProcessor extends PIDController
 		super(Kp, Ki, Kd, source, new ControllerOutput(isReversed));	
 		this.feedbackDevice = source;
 	}
-	public boolean ggeett()
-	{
-
-	      double m = 630 - 0;
-		double perc = 1;
-	      System.out.println("error: " + getError());
-	      System.out.println("p: " +  1 / 100.0 * m);
-	      
-	      System.out.println(Math.abs(getError()) < perc / 100 * m);
-	      
-	    return Math.abs(getError()) < 1 / 100 * m;
-
-	}
 	
 	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output, boolean isReversed) 
 	{
@@ -100,7 +87,8 @@ public class PIDProcessor extends PIDController
 		}
 		else
 		{
-			this.setPercentTolerance(toleranceValue);
+			double inputRange = maxInput- minInput;
+			this.setAbsoluteTolerance(((inputRange) / 100.0) * toleranceValue);
 		}
 		
 		this.setSetpoint(setPoint);
