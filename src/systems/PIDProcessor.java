@@ -23,6 +23,19 @@ public class PIDProcessor extends PIDController
 		super(Kp, Ki, Kd, source, new ControllerOutput(isReversed));	
 		this.feedbackDevice = source;
 	}
+	public boolean ggeett()
+	{
+
+	      double m = 630 - 0;
+		double perc = 1;
+	      System.out.println("error: " + getError());
+	      System.out.println("p: " +  1 / 100.0 * m);
+	      
+	      System.out.println(Math.abs(getError()) < perc / 100 * m);
+	      
+	    return Math.abs(getError()) < 1 / 100 * m;
+
+	}
 	
 	public PIDProcessor(double Kp, double Ki, double Kd, PIDSource source, PIDOutput output, boolean isReversed) 
 	{
@@ -64,7 +77,9 @@ public class PIDProcessor extends PIDController
 			minInput = setPoint;
 		}
 		
-		this.SetForRun(setPoint, maxInput, minInput, 1 , ToleranceType.PercentageTolerance, false);
+
+		
+		this.SetForRun(setPoint, maxInput, minInput, 1 , ToleranceType.AbsoluteTolerance, false);
 	}
 	
 	public void SetForRun(double setPoint, double absTolerance)
@@ -73,11 +88,11 @@ public class PIDProcessor extends PIDController
 	}
 	
 	public void SetForRun(double setPoint, double maxInput, double minInput, double toleranceValue, ToleranceType toleranceType, boolean isContinous)
-	{
-		this.setSetpoint(setPoint);
-		
-		if(minInput != 0 && maxInput != 0)
-		this.setInputRange(minInput, maxInput);
+	{		
+		if(minInput != 0 && maxInput != 0) 
+		{
+			this.setInputRange(minInput, maxInput);
+		}
 		
 		if(toleranceType == ToleranceType.AbsoluteTolerance)
 		{
@@ -87,7 +102,10 @@ public class PIDProcessor extends PIDController
 		{
 			this.setPercentTolerance(toleranceValue);
 		}
+		
+		this.setSetpoint(setPoint);
 	}
+	
 	
 	public double GetOutputValue()
 	{
