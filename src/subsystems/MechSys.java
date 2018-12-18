@@ -1,5 +1,6 @@
 package subsystems;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -207,9 +208,9 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 		}
     }
 	
-	public void SetSafety(CurrentSafety safety)
+	public void SetSafety(PowerDistributionPanel PDP, int[] motorPorts, double maxAmp, double dangerTime, double sleepTimer)
 	{
-		this.safety = safety;
+		this.safety = new CurrentSafety(this, PDP, motorPorts, maxAmp, dangerTime, sleepTimer);
 	}
 
 	@Override
