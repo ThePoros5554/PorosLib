@@ -4,78 +4,56 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class SystemCurrent 
 {
-	private PowerDistributionPanel PDP;
-	private int[] motorPorts;
-	
-	private double stallCurrent = 0;
-	private boolean[] stalling;
-	private boolean isStalling = false;
+	private MotorCurrent[] motors;
 	
 	public SystemCurrent(PowerDistributionPanel PDP, int[] motorPorts)
 	{
-		this.PDP = PDP;
-		this.motorPorts = motorPorts;
-	}
-	
-	public CurrentValue[] GetCurrent()
-	{
-		CurrentValue[] values = new CurrentValue[motorPorts.length];
+		this.motors = new MotorCurrent[motorPorts.length];
 		
-		for (int i = 0; i < motorPorts.length; i++) 
+		for(int i = 0; i < this.motors.length; i++)
 		{
-			values[i] = new  CurrentValue(motorPorts[i], PDP.getCurrent(motorPorts[i]));
+			this.motors[i] = new MotorCurrent(PDP, motorPorts[i]);
 		}
-		
-		return values;
 	}
 	
-	public void SetStallCurrent(double stallCurrent)
-	{
-		this.stallCurrent = stallCurrent;
-		this.stalling = new boolean[this.motorPorts.length];
-	}
-	
-	public double GetStallCurrent()
-	{
-		return this.stallCurrent;
-	}
-	
-	private void UpdateStallingInfo()
-	{
-		if(this.stalling != null)
-		{
-			this.isStalling = false;
-
-			for (int i = 0; i < motorPorts.length; i++) 
-			{
-				
-				if (this.PDP.getCurrent(this.motorPorts[i]) >= this.stallCurrent) 
-				{
-					this.isStalling = true;
-					this.stalling[i] = true;
-				}
-			}
-			
-		}
+	public MotorCurrent[] GetCurrent()
+	{	
+		UpdateCurrentInfo();
+		return motors;
 	}
 	
 	public boolean IsStalling()
 	{
-		this.UpdateStallingInfo();
+		UpdateCurrentInfo();
 		
-		return this.isStalling;
+		boolean isStalling = false;
+		
+		for(int i = 0; i < this.motors.length; i++)
+		{
+			if(this.motors[i].isStalling)
+			{
+				isStalling = true; 
+			}
+			
+		}
+		
+		return isStalling;
 	}
 	
-	public boolean[] Stalling()
+	public void SetStallCurrent(double stallCurrent)
 	{
-		this.UpdateStallingInfo();
-
-		return this.stalling;
+		for(int i = 0; i < this.motors.length; i++)
+		{
+			this.motors[i].SetStallCurrent(stallCurrent);
+		}
 	}
 	
-	public int[] GetMotorPorts()
+	private void UpdateCurrentInfo()
 	{
-		return this.motorPorts;
+		for (int i = 0; i < motors.length; i++) 
+		{
+			motors[i].UpdateMotorCurrent();
+		}
 	}
 	
 }

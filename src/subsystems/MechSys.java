@@ -7,6 +7,7 @@ import sensors.LimitSensor;
 import sensors.SysPosition;
 import systems.CurrentSafety;
 import systems.SafeSubsystem;
+import util.MotorCurrent;
 import util.SystemCurrent;
 
 /**
@@ -220,6 +221,18 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 		{
 			this.systemCurrent.SetStallCurrent(maxAmp);
 			this.safety = new CurrentSafety(this, this.systemCurrent, dangerTime, sleepTimer);
+		}
+	}
+	
+	public MotorCurrent[] GetCurrent()
+	{
+		if(systemCurrent == null)
+		{
+			return null;
+		}
+		else
+		{
+			return this.systemCurrent.GetCurrent();
 		}
 	}
 

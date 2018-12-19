@@ -70,11 +70,11 @@ public class CurrentSafety
 	
 	private void SendStallingReport()
 	{
-		for (int i = 0; i < this.systemCurrent.Stalling().length; i++) 
+		for (int i = 0; i < this.systemCurrent.GetCurrent().length; i++) 
 		{
-			if(this.systemCurrent.Stalling()[i])
+			if(this.systemCurrent.GetCurrent()[i].isStalling)
 			{
-				int stallingPort = this.systemCurrent.GetMotorPorts()[i];
+				int stallingPort = this.systemCurrent.GetCurrent()[i].GetPort();
 				DriverStation.reportError(String.format("It appears that the motor connected to port %s is stalling... "
 						+ "\nPutting motor in sleep mode to avoid additional damage.", stallingPort), false);
 						
