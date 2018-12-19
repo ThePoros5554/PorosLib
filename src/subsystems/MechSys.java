@@ -8,6 +8,7 @@ import sensors.LimitSensor;
 import sensors.SysPosition;
 import systems.CurrentSafety;
 import systems.SafeSubsystem;
+import util.CurrentMonitor;
 
 /**
  *
@@ -26,6 +27,7 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 	private boolean isDisabled = false;
 	private boolean isSafetyEnabled = false;
 	
+	private CurrentMonitor systemCurrent;
 	private CurrentSafety safety;
 
 	public MechSys(int port)
@@ -208,8 +210,14 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 		}
     }
 	
+	public void SetCurrentMonitor(CurrentMonitor monitor)
+	{
+		this.systemCurrent = monitor;
+	}
+	
 	public void SetSafety(PowerDistributionPanel PDP, int[] motorPorts, double maxAmp, double dangerTime, double sleepTimer)
 	{
+		if(this.systemCurrent)
 		this.safety = new CurrentSafety(this, PDP, motorPorts, maxAmp, dangerTime, sleepTimer);
 	}
 
