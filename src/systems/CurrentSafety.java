@@ -1,18 +1,14 @@
 package systems;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
+import util.SystemCurrent;
 
 public class CurrentSafety 
 {
 	private SafeSubsystem subsystem;
 	
-	private PowerDistributionPanel PDP;
-	private int[] motorPorts;
-	private boolean[] stalling;
-	
-	private double maxAmp;
+	private SystemCurrent systemCurrent;
 	
 	private double dangerTime;	
 	private Timer dangerTimer = new Timer();
@@ -22,13 +18,12 @@ public class CurrentSafety
 	
 	private boolean isTimerEnabled = false;
 	
-	public CurrentSafety(SafeSubsystem subsystem, PowerDistributionPanel PDP, int[] motorPorts, double maxAmp, double dangerTime, double sleepTimer)
+	public CurrentSafety(SafeSubsystem subsystem, SystemCurrent systemCurrent, double dangerTime, double sleepTimer)
 	{
 		this.subsystem = subsystem;
-		this.PDP = PDP;
-		this.motorPorts = motorPorts;
-		this.stalling = new boolean[this.motorPorts.length];
-		this.maxAmp = maxAmp;
+
+		this.systemCurrent = systemCurrent;
+		
 		this.dangerTime = dangerTime;
 		this.sleepTime = sleepTimer;
 	}
@@ -36,19 +31,8 @@ public class CurrentSafety
 	public void calculate() 
 	{
 		if (!subsystem.IsDisabled()) 
-		{
-			boolean isStalling = false;
-			
-			for (int i = 0; i < motorPorts.length; i++) 
-			{
-				if (this.PDP.getCurrent(this.motorPorts[i]) >= this.maxAmp) 
-				{
-					isStalling = true;
-					this.stalling[i] = true;
-				}
-			}
-			
-			if (isStalling) 
+		{			
+			if (this.systemCurrent.IsStalling()) 
 			{
 				if (!this.isTimerEnabled) 
 				{
@@ -86,21 +70,16 @@ public class CurrentSafety
 	
 	private void SendStallingReport()
 	{
-		for (int i = 0; i < stalling.length; i++) 
+		for (int i = 0; i < this.systemCurrent.Stalling().length; i++) 
 		{
-			if(stalling[i])
+			if(this.systemCurrent.Stalling()[i])
 			{
-				int stallingPort = this.motorPorts[i];
+				int stallingPort = this.systemCurrent.GetMotorPorts()[i];
 				DriverStation.reportError(String.format("It appears that the motor connected to port %s is stalling... "
 						+ "\nPutting motor in sleep mode to avoid additional damage.", stallingPort), false);
 						
 			}
 		}
-	}
-	
-	public boolean[] GetIsStalling()
-	{
-		return this.stalling;
 	}
 	
 	private boolean WakeUp()

@@ -1,6 +1,5 @@
 package subsystems;
 
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -8,7 +7,7 @@ import sensors.LimitSensor;
 import sensors.SysPosition;
 import systems.CurrentSafety;
 import systems.SafeSubsystem;
-import util.CurrentMonitor;
+import util.SystemCurrent;
 
 /**
  *
@@ -27,7 +26,7 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 	private boolean isDisabled = false;
 	private boolean isSafetyEnabled = false;
 	
-	private CurrentMonitor systemCurrent;
+	private SystemCurrent systemCurrent;
 	private CurrentSafety safety;
 
 	public MechSys(int port)
@@ -210,15 +209,18 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 		}
     }
 	
-	public void SetCurrentMonitor(CurrentMonitor monitor)
+	public void SetCurrentMonitor(SystemCurrent monitor)
 	{
 		this.systemCurrent = monitor;
 	}
 	
-	public void SetSafety(PowerDistributionPanel PDP, int[] motorPorts, double maxAmp, double dangerTime, double sleepTimer)
+	public void SetSafety(double maxAmp, double dangerTime, double sleepTimer)
 	{
-		if(this.systemCurrent)
-		this.safety = new CurrentSafety(this, PDP, motorPorts, maxAmp, dangerTime, sleepTimer);
+		if(this.systemCurrent != null)
+		{
+			this.systemCurrent.SetStallCurrent(maxAmp);
+			this.safety = new CurrentSafety(this, this.systemCurrent, dangerTime, sleepTimer);
+		}
 	}
 
 	@Override

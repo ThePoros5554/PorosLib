@@ -2,7 +2,7 @@ package util;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
-public class CurrentMonitor 
+public class SystemCurrent 
 {
 	private PowerDistributionPanel PDP;
 	private int[] motorPorts;
@@ -11,7 +11,7 @@ public class CurrentMonitor
 	private boolean[] stalling;
 	private boolean isStalling = false;
 	
-	public CurrentMonitor(PowerDistributionPanel PDP, int[] motorPorts)
+	public SystemCurrent(PowerDistributionPanel PDP, int[] motorPorts)
 	{
 		this.PDP = PDP;
 		this.motorPorts = motorPorts;
@@ -71,6 +71,11 @@ public class CurrentMonitor
 		this.UpdateStallingInfo();
 
 		return this.stalling;
+	}
+	
+	public int[] GetMotorPorts()
+	{
+		return this.motorPorts;
 	}
 	
 }
