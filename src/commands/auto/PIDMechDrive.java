@@ -10,6 +10,8 @@ public class PIDMechDrive extends Command
 	private MechDriveTrain dt;
 	
 	private PIDProcessor powerProc;
+	private double constPower;
+	
 	private PIDProcessor fixProc;
 	private PIDProcessor angleProc;
 	
@@ -17,16 +19,22 @@ public class PIDMechDrive extends Command
 		
 	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp)
 	{
-		this.LoadCmd(dt, direction, powerProc,powerSp, fixProc, fixSp, angleProc, angleSp);
+		this.LoadCmd(dt, direction, 0, powerProc,powerSp, fixProc, fixSp, angleProc, angleSp);
 	}
 	
 	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp, double timeout)
 	{
 		super(timeout);
-		this.LoadCmd(dt, direction, powerProc , powerSp, fixProc, fixSp, angleProc, angleSp);
+		this.LoadCmd(dt, direction, 0, powerProc , powerSp, fixProc, fixSp, angleProc, angleSp);
 	}
 	
-	private void LoadCmd(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp)
+	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, double constPower, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp, double timeout)
+	{
+		super(timeout);
+		this.LoadCmd(dt, direction, constPower, null , 0, fixProc, fixSp, angleProc, angleSp);
+	}
+	
+	private void LoadCmd(MechDriveTrain dt, MechDrivingDirection direction, double constPower, PIDProcessor powerProc, double powerSp, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp)
 	{
 		requires(dt);
 
@@ -36,6 +44,10 @@ public class PIDMechDrive extends Command
     	{
     		this.powerProc = powerProc;
     		this.powerProc.SetForRun(powerSp);
+    	}
+    	else
+    	{
+    		this.constPower = constPower;
     	}
     	
     	if(fixProc != null)
@@ -87,6 +99,10 @@ public class PIDMechDrive extends Command
     	{
     		powerOutput = this.powerProc.GetOutputValue();
     	}
+    	else
+    	{
+    		powerOutput = constPower;
+    	}
     	
     	if(this.fixProc != null)
     	{
@@ -111,8 +127,14 @@ public class PIDMechDrive extends Command
 	@Override
 	protected boolean isFinished() 
 	{
-
-		return this.powerProc.onTarget() || this.isTimedOut();
+		boolean onTarget = false;
+		
+		if(this.powerProc != null)
+		{
+			onTarget = this.powerProc.onTarget();
+		}
+		
+		return onTarget || this.isTimedOut();
 	}
 	
 	@Override

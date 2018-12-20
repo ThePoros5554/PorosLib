@@ -10,9 +10,7 @@ import systems.SafeSubsystem;
 import util.MotorCurrent;
 import util.SystemCurrent;
 
-/**
- *
- */
+
 public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem {
 
 	private SpeedController motor;
