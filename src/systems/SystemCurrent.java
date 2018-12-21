@@ -1,6 +1,7 @@
-package util;
+package systems;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import util.MotorCurrent;
 
 public class SystemCurrent 
 {
