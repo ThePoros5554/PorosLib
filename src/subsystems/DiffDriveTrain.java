@@ -51,6 +51,21 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
     	}
     }
     
+    public int getRawLeftPosition()
+    {
+    	return 0;
+    }
+    
+    public int getRawRightPosition()
+    {
+    	return 0;
+    }
+    
+    public double getHeading()
+    {
+    	return 0;
+    }
+    
     public void SetIsSquared (boolean isSquared)
     {
     	this.isSquared = isSquared;
