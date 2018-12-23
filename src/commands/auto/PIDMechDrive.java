@@ -136,7 +136,7 @@ public class PIDMechDrive extends Command
 		
 		if (this.angleProc != null)
 		{
-			onTarget = this.angleProc.onTarget();
+			onTarget = onTarget && this.angleProc.onTarget();
 		}
 		
 		return onTarget || this.isTimedOut();
