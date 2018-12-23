@@ -84,6 +84,11 @@ public class PIDTankDrive extends Command {
 			onTarget = this.leftProc.onTarget();
 		}
 		
+		if (this.angleProc != null)
+		{
+			onTarget = this.angleProc.onTarget();
+		}
+		
 		return onTarget || this.isTimedOut();
     }
 

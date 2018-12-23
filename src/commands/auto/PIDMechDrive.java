@@ -129,9 +129,14 @@ public class PIDMechDrive extends Command
 	{
 		boolean onTarget = false;
 		
-		if(this.powerProc != null)
+		if (this.powerProc != null)
 		{
 			onTarget = this.powerProc.onTarget();
+		}
+		
+		if (this.angleProc != null)
+		{
+			onTarget = this.angleProc.onTarget();
 		}
 		
 		return onTarget || this.isTimedOut();

@@ -66,6 +66,11 @@ public class PIDArcadeDrive extends Command {
 			onTarget = this.speedProc.onTarget();
 		}
 		
+		if (this.turnProc != null)
+		{
+			onTarget = this.turnProc.onTarget();
+		}
+		
 		return onTarget || this.isTimedOut();
     }
 
