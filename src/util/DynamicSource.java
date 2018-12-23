@@ -7,9 +7,8 @@ public class DynamicSource implements PIDSource
 {
 	private double value;
 	
-	public DynamicSource(double value)
+	public DynamicSource()
 	{
-		this.value = value; // value of source
 	}
 	
 	public void SetValue(double value)

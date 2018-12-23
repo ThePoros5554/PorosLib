@@ -68,7 +68,7 @@ public class PIDArcadeDrive extends Command {
 		
 		if (this.turnProc != null)
 		{
-			onTarget = this.turnProc.onTarget();
+			onTarget = onTarget && this.turnProc.onTarget();
 		}
 		
 		return onTarget || this.isTimedOut();
