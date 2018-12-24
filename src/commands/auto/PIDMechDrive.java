@@ -17,71 +17,97 @@ public class PIDMechDrive extends Command
 	
 	private MechDrivingDirection direction;
 		
-	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp)
+	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp,
+			PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp)
 	{
-		this.LoadCmd(dt, direction, 0, powerProc,powerSp, fixProc, fixSp, angleProc, angleSp);
+		this.LoadCmd(drivetrain, direction, 0, powerProc, fixProc, angleProc);
+    	this.SetSetpoints(powerSp, fixSp, angleSp);
 	}
 	
-	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp, double timeout)
-	{
-		super(timeout);
-		this.LoadCmd(dt, direction, 0, powerProc , powerSp, fixProc, fixSp, angleProc, angleSp);
-	}
-	
-	public PIDMechDrive(MechDriveTrain dt, MechDrivingDirection direction, double constPower, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp, double timeout)
+	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp,
+			PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp, double timeout)
 	{
 		super(timeout);
-		this.LoadCmd(dt, direction, constPower, null , 0, fixProc, fixSp, angleProc, angleSp);
+		this.LoadCmd(drivetrain, direction, 0, powerProc, fixProc, angleProc);
+    	this.SetSetpoints(powerSp, fixSp, angleSp);
 	}
 	
-	private void LoadCmd(MechDriveTrain dt, MechDrivingDirection direction, double constPower, PIDProcessor powerProc, double powerSp, PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp)
+	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, double constPower, PIDProcessor fixProc, double fixSp,
+			PIDProcessor angleProc, double angleSp, double timeout)
+	{
+		super(timeout);
+		this.LoadCmd(drivetrain, direction, constPower, null, fixProc, angleProc);
+    	this.SetSetpoints(0, fixSp, angleSp);
+	}
+	
+	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, PIDProcessor powerProc, PIDProcessor fixProc, PIDProcessor angleProc)
+	{
+		this.LoadCmd(drivetrain, direction, 0, powerProc, fixProc, angleProc);
+	}
+	
+	private void LoadCmd(MechDriveTrain dt, MechDrivingDirection direction, double constPower, PIDProcessor powerProc,
+			PIDProcessor fixProc, PIDProcessor angleProc)
 	{
 		requires(dt);
 
 		this.dt = dt;		
 		
-    	if(powerProc != null)
+    	if (powerProc != null)
     	{
     		this.powerProc = powerProc;
-    		this.powerProc.SetForRun(powerSp);
     	}
     	else
     	{
     		this.constPower = constPower;
     	}
     	
-    	if(fixProc != null)
+    	if (fixProc != null)
     	{
     		this.fixProc = fixProc;
-    		this.fixProc.SetForRun(fixSp);
     	}
     	
-    	if(angleProc != null)
+    	if (angleProc != null)
     	{
     		this.angleProc = angleProc;
-    		this.angleProc.SetForRun(angleSp);
     	}
     	
     	this.direction = direction;
-
+	}
+	
+	private void SetSetpoints(double powerSetpoint, double fixSetpoint, double angleSetpoint)
+	{
+		if (this.powerProc != null)
+		{
+			this.powerProc.SetForRun(powerSetpoint);
+		}
+		
+		if (this.fixProc != null)
+		{
+			this.fixProc.SetForRun(fixSetpoint);
+		}
+		
+		if (this.angleProc != null)
+		{
+			this.angleProc.SetForRun(angleSetpoint);
+		}
 	}
 	
 	@Override
     protected void initialize() 
     {
-    	if(powerProc != null)
+    	if (powerProc != null)
     	{
     		powerProc.ResetFeedbackDevice();
     		powerProc.enable();
     	}
     	
-    	if(fixProc != null)
+    	if (fixProc != null)
     	{
     		fixProc.ResetFeedbackDevice();
     		fixProc.enable();
     	}
     	
-    	if(angleProc != null)
+    	if (angleProc != null)
     	{
     		angleProc.ResetFeedbackDevice();
     		angleProc.enable();
@@ -95,7 +121,7 @@ public class PIDMechDrive extends Command
     	double fixOutput = 0;
     	double angleOutput = 0;
     	
-    	if(this.powerProc != null)
+    	if (this.powerProc != null)
     	{
     		powerOutput = this.powerProc.GetOutputValue();
     	}
@@ -104,17 +130,17 @@ public class PIDMechDrive extends Command
     		powerOutput = constPower;
     	}
     	
-    	if(this.fixProc != null)
+    	if (this.fixProc != null)
     	{
     		fixOutput = this.fixProc.GetOutputValue();
     	}
     	
-    	if(this.angleProc != null)
+    	if (this.angleProc != null)
     	{
     		angleOutput = this.angleProc.GetOutputValue();
     	}
     	
-    	if(this.direction == MechDrivingDirection.Forward)
+    	if (this.direction == MechDrivingDirection.Forward)
     	{
     		this.dt.MechanumDrive(fixOutput, powerOutput, angleOutput, 0, 1);
     	}
@@ -145,17 +171,17 @@ public class PIDMechDrive extends Command
 	@Override
 	protected void end() 
 	{
-    	if(powerProc != null)
+    	if (powerProc != null)
     	{
     		powerProc.reset();
     	}
     	
-    	if(fixProc != null)
+    	if (fixProc != null)
     	{
     		fixProc.reset();
     	}
     	
-    	if(angleProc != null)
+    	if (angleProc != null)
     	{
     		angleProc.reset();
     	}
@@ -170,5 +196,4 @@ public class PIDMechDrive extends Command
 	{
 		end();
 	}
-	
 }

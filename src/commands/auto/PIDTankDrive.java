@@ -15,6 +15,32 @@ public class PIDTankDrive extends Command {
 	private PIDProcessor leftProc;
 	private PIDProcessor angleProc;
 	
+    public PIDTankDrive(DiffDriveTrain drivetrain, PIDProcessor leftProc, double leftSetpoint,
+    		PIDProcessor rightProc, double rightSetpoint, PIDProcessor angleProc, double angleSetpoint)
+    {
+        requires(drivetrain);
+        
+        this.drivetrain = drivetrain;
+        this.rightProc = rightProc;
+        this.leftProc = leftProc;
+        this.angleProc = angleProc;
+        
+        if (this.rightProc != null)
+        {
+        	this.rightProc.SetForRun(rightSetpoint);
+        }
+        
+        if (this.leftProc != null)
+        {
+        	this.leftProc.SetForRun(leftSetpoint);
+        }
+        
+        if (this.angleProc != null)
+        {
+        	this.angleProc.SetForRun(angleSetpoint);
+        }
+    }
+	
     public PIDTankDrive(DiffDriveTrain drivetrain, PIDProcessor leftProc, PIDProcessor rightProc, PIDProcessor angleProc)
     {
         requires(drivetrain);
@@ -28,19 +54,22 @@ public class PIDTankDrive extends Command {
     // Called just before this Command runs the first time
     protected void initialize()
     {
-    	if (rightProc != null)
+    	if (this.rightProc != null)
     	{
-    		rightProc.enable();
+    		this.rightProc.ResetFeedbackDevice();
+    		this.rightProc.enable();
     	}
     	
-    	if (leftProc != null)
+    	if (this.leftProc != null)
     	{
-    		leftProc.enable();
+    		this.leftProc.ResetFeedbackDevice();
+    		this.leftProc.enable();
     	}
     	
-    	if (angleProc != null)
+    	if (this.angleProc != null)
     	{
-    		angleProc.enable();
+    		this.angleProc.ResetFeedbackDevice();
+    		this.angleProc.enable();
     	}
     }
 
@@ -95,22 +124,24 @@ public class PIDTankDrive extends Command {
     // Called once after isFinished returns true
     protected void end()
     {
-    	if (rightProc != null)
+    	if (this.rightProc != null)
     	{
-    		rightProc.reset();
+    		this.rightProc.reset();
     	}
     	
-    	if (leftProc != null)
+    	if (this.leftProc != null)
     	{
-    		leftProc.reset();
+    		this.leftProc.reset();
     	}
     	
-    	if (angleProc != null)
+    	if (this.angleProc != null)
     	{
-    		angleProc.reset();
+    		this.angleProc.reset();
     	}
     	
     	this.drivetrain.TankDrive(0, 0, 1);
+    	
+    	System.out.println("End Auto Drive");
     }
 
     // Called when another command which requires one or more of the same

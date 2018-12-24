@@ -14,6 +14,26 @@ public class PIDArcadeDrive extends Command {
 	private PIDProcessor speedProc;
 	private PIDProcessor turnProc;
 	
+    public PIDArcadeDrive(DiffDriveTrain drivetrain, PIDProcessor speedProc, double speedSetpoint,
+    		PIDProcessor turnProc, double turnSetpoint)
+    {
+        requires(drivetrain);
+        
+        this.drivetrain = drivetrain;
+        this.speedProc = speedProc;
+        this.turnProc = turnProc;
+        
+        if (this.speedProc != null)
+        {
+        	this.speedProc.SetForRun(speedSetpoint);
+        }
+        
+        if (this.turnProc != null)
+        {
+        	this.turnProc.SetForRun(turnSetpoint);
+        }
+    }
+    
     public PIDArcadeDrive(DiffDriveTrain drivetrain, PIDProcessor speedProc, PIDProcessor turnProc)
     {
         requires(drivetrain);
@@ -26,14 +46,16 @@ public class PIDArcadeDrive extends Command {
     // Called just before this Command runs the first time
     protected void initialize()
     {
-    	if (speedProc != null)
+    	if (this.speedProc != null)
     	{
-    		speedProc.enable();
+    		this.speedProc.ResetFeedbackDevice();
+    		this.speedProc.enable();
     	}
     	
-    	if (turnProc != null)
+    	if (this.turnProc != null)
     	{
-    		turnProc.enable();
+    		this.turnProc.ResetFeedbackDevice();
+    		this.turnProc.enable();
     	}
     }
 
@@ -77,17 +99,19 @@ public class PIDArcadeDrive extends Command {
     // Called once after isFinished returns true
     protected void end()
     {
-    	if (speedProc != null)
+    	if (this.speedProc != null)
     	{
-    		speedProc.reset();
+    		this.speedProc.reset();
     	}
     	
-    	if (turnProc != null)
+    	if (this.turnProc != null)
     	{
-    		turnProc.reset();
+    		this.turnProc.reset();
     	}
     	
     	this.drivetrain.ArcadeDrive(0, 0, 1);
+    	
+    	System.out.println("End Auto Drive");
     }
 
     // Called when another command which requires one or more of the same
