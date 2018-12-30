@@ -46,7 +46,7 @@ public class JoyAxis extends Trigger
 	{
 		double value = joy.getRawAxis(this.axisNumber);
 		
-		return MathHelper.MapRange(this.oldMaxValue, this.oldMinValue, this.newMinValue, this.newMaxValue, value);
+		return MathHelper.mapRange(this.oldMaxValue, this.oldMinValue, this.newMinValue, this.newMaxValue, value);
 	}
 }
 	
