@@ -12,12 +12,21 @@ public class SimplePIDAction extends Command {
 	private PidActionSubsys subsystem;
 	private PIDProcessor controller;
 	
-    public SimplePIDAction(PidActionSubsys subsystem, PIDProcessor controller, double sp) 
+    public SimplePIDAction(PidActionSubsys subsystem, PIDProcessor controller, double sp, boolean resetFeedbackDevice) 
     {
         this.controller = controller;
         
-        this.controller.SetForRun(sp);
+        this.controller.SetForRun(sp, resetFeedbackDevice);
         
+        requires(subsystem.GetSubsystem());
+        
+        this.subsystem = subsystem;
+    }
+    
+    public SimplePIDAction(PidActionSubsys subsystem, PIDProcessor controller) 
+    {
+        this.controller = controller;
+                
         requires(subsystem.GetSubsystem());
         
         this.subsystem = subsystem;

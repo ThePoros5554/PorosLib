@@ -17,27 +17,29 @@ public class PIDMechDrive extends Command
 	
 	private MechDrivingDirection direction;
 		
-	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp,
-			PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp)
+	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp, boolean resetDistance,
+			PIDProcessor fixProc, double fixSp, boolean resetFix,
+				PIDProcessor angleProc, double angleSp,boolean resetAngle)
 	{
 		this.LoadCmd(drivetrain, direction, 0, powerProc, fixProc, angleProc);
-    	this.SetSetpoints(powerSp, fixSp, angleSp);
+    	this.SetSetpoints(powerSp, resetDistance, fixSp, resetFix, angleSp, resetAngle);
 	}
 	
-	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp,
-			PIDProcessor fixProc, double fixSp, PIDProcessor angleProc, double angleSp, double timeout)
+	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, PIDProcessor powerProc, double powerSp, boolean resetDistance,
+			PIDProcessor fixProc, double fixSp, boolean resetFix,
+				PIDProcessor angleProc, double angleSp, boolean resetAngle, double timeout)
 	{
 		super(timeout);
 		this.LoadCmd(drivetrain, direction, 0, powerProc, fixProc, angleProc);
-    	this.SetSetpoints(powerSp, fixSp, angleSp);
+    	this.SetSetpoints(powerSp, resetDistance, fixSp, resetFix, angleSp, resetAngle);
 	}
 	
-	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, double constPower, PIDProcessor fixProc, double fixSp,
-			PIDProcessor angleProc, double angleSp, double timeout)
+	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, double constPower, PIDProcessor fixProc, double fixSp, boolean resetFix,
+			PIDProcessor angleProc, double angleSp, boolean resetAngle, double timeout)
 	{
 		super(timeout);
 		this.LoadCmd(drivetrain, direction, constPower, null, fixProc, angleProc);
-    	this.SetSetpoints(0, fixSp, angleSp);
+    	this.SetSetpoints(0, false, fixSp, resetFix, angleSp, resetAngle);
 	}
 	
 	public PIDMechDrive(MechDriveTrain drivetrain, MechDrivingDirection direction, PIDProcessor powerProc, PIDProcessor fixProc, PIDProcessor angleProc)
@@ -74,21 +76,21 @@ public class PIDMechDrive extends Command
     	this.direction = direction;
 	}
 	
-	private void SetSetpoints(double powerSetpoint, double fixSetpoint, double angleSetpoint)
+	private void SetSetpoints(double powerSetpoint, boolean resetDistance, double fixSetpoint, boolean resetFix, double angleSetpoint, boolean resetAngle)
 	{
 		if (this.powerProc != null)
 		{
-			this.powerProc.SetForRun(powerSetpoint);
+			this.powerProc.SetForRun(powerSetpoint, resetDistance);
 		}
 		
 		if (this.fixProc != null)
 		{
-			this.fixProc.SetForRun(fixSetpoint);
+			this.fixProc.SetForRun(fixSetpoint, resetFix);
 		}
 		
 		if (this.angleProc != null)
 		{
-			this.angleProc.SetForRun(angleSetpoint);
+			this.angleProc.SetForRun(angleSetpoint, resetAngle);
 		}
 	}
 	

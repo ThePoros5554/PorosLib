@@ -15,29 +15,31 @@ public class PIDTankDrive extends Command {
 	private PIDProcessor leftProc;
 	private PIDProcessor angleProc;
 	
-    public PIDTankDrive(DiffDriveTrain drivetrain, PIDProcessor leftProc, double leftSetpoint,
-    		PIDProcessor rightProc, double rightSetpoint, PIDProcessor angleProc, double angleSetpoint)
+    public PIDTankDrive(DiffDriveTrain drivetrain, PIDProcessor leftProc, double leftSetpoint, boolean resetLeftDistance,
+    		PIDProcessor rightProc, double rightSetpoint, boolean resetRightDistance, 
+    			PIDProcessor angleProc, double angleSetpoint, boolean resetAngle)
     {
         requires(drivetrain);
         
         this.drivetrain = drivetrain;
-        this.rightProc = rightProc;
         this.leftProc = leftProc;
+        this.rightProc = rightProc;
         this.angleProc = angleProc;
-        
-        if (this.rightProc != null)
-        {
-        	this.rightProc.SetForRun(rightSetpoint);
-        }
         
         if (this.leftProc != null)
         {
-        	this.leftProc.SetForRun(leftSetpoint);
+        	this.leftProc.SetForRun(leftSetpoint, resetLeftDistance);
         }
+        
+        if (this.rightProc != null)
+        {
+        	this.rightProc.SetForRun(rightSetpoint, resetRightDistance);
+        }
+       
         
         if (this.angleProc != null)
         {
-        	this.angleProc.SetForRun(angleSetpoint);
+        	this.angleProc.SetForRun(angleSetpoint, resetAngle);
         }
     }
 	

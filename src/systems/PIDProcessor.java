@@ -12,6 +12,8 @@ public class PIDProcessor extends PIDController
 {	
 	private PIDSource feedbackDevice;
 	
+	private boolean resetWhenEnabled;
+	
 	public enum ToleranceType
 	{
 		AbsoluteTolerance,
@@ -48,7 +50,7 @@ public class PIDProcessor extends PIDController
 		this.m_pidOutput = output;
 	}
 	
-	public void SetForRun(double setPoint)
+	public void SetForRun(double setPoint, boolean resetWhenEnabled)
 	{
 		double maxInput;
 		double minInput;
@@ -66,15 +68,15 @@ public class PIDProcessor extends PIDController
 		
 
 		
-		this.SetForRun(setPoint, maxInput, minInput, 1 , ToleranceType.AbsoluteTolerance, false);
+		this.SetForRun(setPoint, maxInput, minInput, 1 , ToleranceType.AbsoluteTolerance, false, resetWhenEnabled);
 	}
 	
-	public void SetForRun(double setPoint, double absTolerance)
+	public void SetForRun(double setPoint, double absTolerance, boolean resetWhenEnabled)
 	{
-		this.SetForRun(setPoint, 0, 0, absTolerance, ToleranceType.AbsoluteTolerance, false);
+		this.SetForRun(setPoint, 0, 0, absTolerance, ToleranceType.AbsoluteTolerance, false, resetWhenEnabled);
 	}
 	
-	public void SetForRun(double setPoint, double maxInput, double minInput, double toleranceValue, ToleranceType toleranceType, boolean isContinous)
+	public void SetForRun(double setPoint, double maxInput, double minInput, double toleranceValue, ToleranceType toleranceType, boolean isContinous, boolean resetWhenEnabled)
 	{		
 		if(minInput != 0 && maxInput != 0) 
 		{
@@ -91,6 +93,8 @@ public class PIDProcessor extends PIDController
 			this.setAbsoluteTolerance(((inputRange) / 100.0) * toleranceValue);
 		}
 		
+		this.resetWhenEnabled = resetWhenEnabled;
+		
 		this.setSetpoint(setPoint);
 	}
 	
@@ -98,6 +102,17 @@ public class PIDProcessor extends PIDController
 	public double GetOutputValue()
 	{
 		return ((ControllerOutput)this.m_pidOutput).GetOutputValue();
+	}
+	
+	@Override
+	public void enable()
+	{
+		if (this.resetWhenEnabled)
+		{
+			this.ResetFeedbackDevice();
+		}
+		
+		super.enable();
 	}
 
 

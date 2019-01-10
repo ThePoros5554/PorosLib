@@ -14,8 +14,8 @@ public class PIDArcadeDrive extends Command {
 	private PIDProcessor speedProc;
 	private PIDProcessor turnProc;
 	
-    public PIDArcadeDrive(DiffDriveTrain drivetrain, PIDProcessor speedProc, double speedSetpoint,
-    		PIDProcessor turnProc, double turnSetpoint)
+    public PIDArcadeDrive(DiffDriveTrain drivetrain, PIDProcessor speedProc, double speedSetpoint, boolean resetDistance,
+    		PIDProcessor turnProc, double turnSetpoint, boolean resetAngle)
     {
         requires(drivetrain);
         
@@ -25,12 +25,12 @@ public class PIDArcadeDrive extends Command {
         
         if (this.speedProc != null)
         {
-        	this.speedProc.SetForRun(speedSetpoint);
+        	this.speedProc.SetForRun(speedSetpoint, resetDistance);
         }
         
         if (this.turnProc != null)
         {
-        	this.turnProc.SetForRun(turnSetpoint);
+        	this.turnProc.SetForRun(turnSetpoint, resetAngle);
         }
     }
     
