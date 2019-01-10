@@ -107,7 +107,7 @@ public class SmartJoystick extends Joystick
 	public double GetSlider()
 	{
 		double sliderValue = this.getRawAxis(this.sliderAxis);
-		sliderValue = MathHelper.MapRange(this.oldMinSlider, this.oldMaxSlider, this.minSlider, this.maxSlider, sliderValue);
+		sliderValue = MathHelper.mapRange(this.oldMinSlider, this.oldMaxSlider, this.minSlider, this.maxSlider, sliderValue);
 		
 		return (sliderValue);
 	}

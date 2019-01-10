@@ -3,6 +3,7 @@ package subsystems;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import systems.DifferentialDriver;
+import util.MathHelper;
 
 /**
  *
@@ -11,6 +12,8 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
 {
 	private DifferentialDriver driver;
 	private boolean isSquared;
+	
+	private double rotateDeadband = 0;
 	
     public DiffDriveTrain(SpeedController leftController, SpeedController rightController)
     {
@@ -27,6 +30,8 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
     {
     	this.driver.setMaxOutput(maxOutput);
     	
+    	rotate = MathHelper.handleDeadband(rotate, rotateDeadband);
+    	
     	if(this.IsReversed())
     	{
     		driver.arcadeDrive(-speed,-rotate, this.isSquared);
@@ -40,6 +45,13 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
     public void TankDrive(double leftSpeed ,double rightSpeed, double maxOutput)
     {
     	this.driver.setMaxOutput(maxOutput);
+    	
+    	if(Math.abs(leftSpeed - rightSpeed) < rotateDeadband)
+    	{
+    		double speed = (leftSpeed + rightSpeed)/2;
+    		leftSpeed = speed;
+    		rightSpeed = speed;
+    	}
     	
     	if(this.IsReversed())
     	{
@@ -86,6 +98,15 @@ public class DiffDriveTrain extends DriveTrain implements PidActionSubsys
     	driver.PidDrive(output);
     }
     
+    public void setRotateDeadband(double deadband)
+    {
+    	this.rotateDeadband = deadband;
+    }
+    
+    public double getRotateDeadband()
+    {
+    	return this.rotateDeadband;
+    }
     
 	@Override
 	public void StopSystem()

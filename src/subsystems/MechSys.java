@@ -2,7 +2,7 @@ package subsystems;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import sensors.LimitSensor;
 import sensors.SysPosition;
@@ -15,12 +15,10 @@ import util.MotorCurrent;
 public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem {
 
 	private SpeedController motor;
-	private SpeedController motor2;
 	
 	private LimitSensor limitSwitch;
 	private boolean isLimited = false;
 
-	private boolean isInverted;
 	private boolean isReversed = false;
 
 	private boolean isDisabled = false;
@@ -29,25 +27,20 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 	private SystemCurrent systemCurrent;
 	private CurrentSafety safety;
 
-	public MechSys(int port)
+	public MechSys(SpeedController motor)
 	{
-		this.motor = new Talon(port);
+		this.motor = motor;
 	}
 	
-	public MechSys(int port1, int port2)
+	public MechSys(SpeedController motor1, SpeedController motor2)
 	{
-		this.motor = new Talon(port1);
-		this.motor2 = new Talon(port2);
-		
-		this.isInverted = false;
+		this.motor = new SpeedControllerGroup(motor1, motor2);
 	}
 	
-	public MechSys(int port1, int port2, boolean inverted)
+	public MechSys(SpeedController motor1, SpeedController motor2, boolean inverted)
 	{
-		this.motor = new Talon(port1);
-		this.motor2 = new Talon(port2);
-		
-		this.isInverted = inverted;
+		motor1.setInverted(inverted);
+		this.motor = new SpeedControllerGroup(motor1, motor2);
 	}
 	
 
@@ -119,18 +112,6 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 		if(!this.isDisabled)
 		{
 			this.motor.set(speed);
-	
-			if(motor2 != null)
-			{
-				if(this.isInverted)
-				{
-					this.motor2.set(-speed);
-				}
-				else
-				{
-					this.motor2.set(speed);
-				}
-			}
 		}
 	}
 	
@@ -164,19 +145,6 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 	public void PidWrite(double output)
 	{
 		this.motor.pidWrite(output);
-		
-		if(motor2 != null)
-		{
-			if(isInverted)
-			{
-				this.motor2.pidWrite(-output);
-			}
-			else
-			{
-				this.motor2.set(output);
-			}
-		}
-
 	}
 	
 	public boolean GetIsLimited()
@@ -202,11 +170,6 @@ public class MechSys extends Subsystem implements PidActionSubsys, SafeSubsystem
 	public void Stop() 
 	{
 		this.motor.set(0);
-		
-		if(motor2 != null)
-		{
-			this.motor2.set(0);
-		}
     }
 	
 	public void SetSystemCurrent(SystemCurrent monitor)
