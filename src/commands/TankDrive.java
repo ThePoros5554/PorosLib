@@ -19,6 +19,8 @@ public class TankDrive extends Command
     public TankDrive(DiffDriveTrain driveTrain, SmartJoystick leftJoy, SmartJoystick rightJoy)
     {
     	this.driveTrain = driveTrain;
+    	this.leftJoy = leftJoy;
+    	this.rightJoy = rightJoy;
         requires(this.driveTrain);
     }
 
